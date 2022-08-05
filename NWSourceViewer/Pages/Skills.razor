@@ -1,0 +1,31 @@
+﻿@page "/skills"
+@inherits DataTableComponent<SkillModel>
+
+<PageTitle>Skills</PageTitle>
+
+<h1>Skills</h1>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced"
+    AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+    ShowPagingSummary="true" Data="Data" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>
+        <RadzenDataGridColumn TItem="SkillModel" Property="Index" Title="Index">
+            <Template Context="data">
+                <a href="/skills/@data.Index">@data.Index</a>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="SkillModel" Property="Name" Title="Name">
+            <Template Context="data">
+                @Tlk[data.Name]
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        await LoadDataAsync("skills", cts.Token);
+    }
+}

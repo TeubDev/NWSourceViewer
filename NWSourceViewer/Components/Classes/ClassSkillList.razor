@@ -1,0 +1,102 @@
+﻿@inherits DataTableComponent<ClassSkillModel>
+
+@if (IsLoaded)
+{
+    <div>
+        Class skills:
+        @if (classSkills.Count == 0)
+    {
+        <text>none</text>
+    }
+        @for (int i = 0; i < classSkills.Count; i++)
+    {
+        <a href="/skills/@classSkills[i].Index">
+                @Tlk![classSkills[i].Name]
+            </a>
+            @if (i < classSkills.Count - 1)
+        {
+            <text>, </text>
+        }
+    }
+    </div>
+    <div>
+        Cross-class skills:
+        @if (crossClassSkills.Count == 0)
+    {
+        <text>none</text>
+    }
+        @for (int i = 0; i < crossClassSkills.Count; i++)
+    {
+        <a href="/skills/@crossClassSkills[i].Index">
+                @Tlk![crossClassSkills[i].Name]
+            </a>
+            @if (i < crossClassSkills.Count - 1)
+        {
+            <text>, </text>
+        }
+    }
+    </div>
+    <div>
+        Unavailable skills:
+        @if (unavailableSkills.Count == 0)
+    {
+        <text>none</text>
+    }
+        @for (int i = 0; i < unavailableSkills.Count; i++)
+    {
+        <a href="/skills/@unavailableSkills[i].Index">
+                @Tlk![unavailableSkills[i].Name]
+            </a>
+            @if (i < unavailableSkills.Count - 1)
+        {
+            <text>, </text>
+        }
+    }
+    </div>
+}
+
+@code {
+[Parameter]
+public string TableName { get; set; } = default!;
+
+private List<SkillModel> classSkills = new List<SkillModel>();
+private List<SkillModel> crossClassSkills = new List<SkillModel>();
+private List<SkillModel> unavailableSkills = new List<SkillModel>();
+
+protected override async Task OnInitializedAsync()
+{
+
+    if (!string.IsNullOrWhiteSpace(TableName))
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        var loadTask = LoadDataAsync(TableName, cts.Token);
+        var skillsTableTask = FileLoader.Load2daAsync<SkillModel>("skills", cts.Token);
+        await Task.WhenAll(loadTask, skillsTableTask);
+        var skillsTable = await skillsTableTask;
+
+        if (IsLoaded && skillsTable != null)
+        {
+            foreach (var skill in skillsTable)
+            {
+                var matchingClassSkill = Data!.FirstOrDefault(classSkill => classSkill.HasData && classSkill.SkillIndex == skill.Index);
+                if (matchingClassSkill != null)
+                {
+                    if (matchingClassSkill.ClassSkill)
+                    {
+                        classSkills.Add(skill);
+                    }
+                    else
+                    {
+                        crossClassSkills.Add(skill);
+                    }
+                }
+                else
+                {
+                    unavailableSkills.Add(skill);
+                }
+            }
+        }
+    }
+}
+}

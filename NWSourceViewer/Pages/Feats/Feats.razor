@@ -1,0 +1,31 @@
+﻿@page "/feats"
+@inherits DataTableComponent<FeatModel>
+
+<PageTitle>Feats</PageTitle>
+
+<h1>Feats</h1>
+
+@if (IsLoaded)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.SimpleWithMenu"
+                AllowSorting="true" PageSize="100" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(FeatModel model) => GoToFeat(model.Index)">
+        <Columns>
+            <RadzenDataGridColumn TItem="FeatModel" Property="Index" Title="Index" />
+            <RadzenDataGridColumn TItem="FeatModel" Title="Name">
+                <Template Context="data">
+                    @Tlk![(uint)data.Feat!]
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        await LoadDataAsync("feat", cts.Token);
+    }
+}

@@ -1,0 +1,112 @@
+﻿@page "/classes/{Id:int}"
+@inherits DataComponent
+@inject IClassService ClassService
+
+@if (IsLoaded)
+{
+    <PageTitle>The @Tlk![model!.ClassModel.Name] Class</PageTitle>
+
+    <h1>The @Tlk![model!.ClassModel.Name] Class</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                Name:
+            </div>
+            <div class="col">
+                @Tlk[model.ClassModel.Name]
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Hit die:
+            </div>
+            <div class="col">
+                d@(model.ClassModel.HitDie)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Skill points:
+            </div>
+            <div class="col">
+                @model.ClassModel.SkillPointBase
+            </div>
+        </div>
+        @if (model.ClassModel.SpellCaster)
+        {
+            <div class="row">
+                <div class="col">
+                    Spellcaster?
+                </div>
+                <div class="col">
+                    Yes
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Type:
+                </div>
+                <div class="col">
+                    @if (model.ClassModel.Arcane)
+                    {
+                        <text>Arcane</text>
+                    }
+                    else
+                    {
+                        <text>Divine</text>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Spell gain table:
+                </div>
+                <div class="col">
+                    @model.ClassModel.SpellGainTable
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Spells known table:
+                </div>
+                <div class="col">
+                    @model.ClassModel.SpellKnownTable
+                </div>
+            </div>
+        }
+    </div>
+    <ClassSkillList TableName="@model.ClassModel.SkillsTable" />
+    <div>Levels:</div>
+    <ClassTable ClassLevels="model.ClassLevels" />
+    @if (model.EpicClassLevels.Count > 0)
+    {
+        <div>Epic levels:</div>
+        <ClassTable ClassLevels="model.EpicClassLevels" />
+    }
+
+    <div>
+        Description:
+    </div>
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk[model.ClassModel.Description]</textarea>
+}
+
+@code {
+    // TODO: Create a CSS class for the textarea.
+    [Parameter]
+    public int Id { get; set; }
+
+    private FullClassModel? model = null;
+
+    protected override bool IsLoaded { get { return base.IsLoaded && model != null; } }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
+        var fullClassTask = ClassService.GetFullClassModelAsync((uint)Id, cts.Token);
+        await Task.WhenAll(tlkTask, fullClassTask);
+        Tlk = await tlkTask;
+        model = await fullClassTask;
+    }
+}

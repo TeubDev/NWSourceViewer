@@ -1,0 +1,58 @@
+﻿@page "/classes"
+@inherits DataTableComponent<ClassModel>
+
+<PageTitle>Classes</PageTitle>
+
+<h1>Classes</h1>
+
+@if (IsLoaded)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.SimpleWithMenu"
+                AllowSorting="true" PageSize="100" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(ClassModel model) => GoToClass(model.Index)">
+        <Columns>
+            <RadzenDataGridColumn TItem="ClassModel" Property="Index" Title="Index" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="Name" Title="Name">
+                <Template Context="data">
+                    @if (data.HasData)
+                    {
+                        @Tlk![data.Name]
+                    }
+                    else
+                    {
+                        @data.Name
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassModel" Property="HitDie" Title="Hit Die" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="SkillPointBase" Title="Skill Point Base" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="PlayerClass" Title="Player Class" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="SpellCaster" Title="Spell Caster" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="MaxLevel" Title="Max Level" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="XPPenalty" Title="XP Penalty" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="ArcSpellLvlMod" Title="Arcane Spell Level Modifier" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="DivSpellLvlMod" Title="Divine Spell Level Modifier" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="EpicLevel" Title="Epic Level" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="MemorizesSpells" Title="Memorizes Spells" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="SpellbookRestricted" Title="Spellbook Restricted" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="PickDomains" Title="Picks Domains" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="PickSchool" Title="Picks School" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="LearnScroll" Title="Learns from Scrolls" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="Arcane" Title="Arcane Caster" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="ASF" Title="Arcane Spell Failure" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="SpellcastingAbil" Title="Spellcasting Ability" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="CLMultiplier" Title="Caster Level Multiplier" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="MinCastingLevel" Title="Minimum Casting Level" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="MinAssociateLevel" Title="Minimum Associate Level" />
+            <RadzenDataGridColumn TItem="ClassModel" Property="CanCastSpontaneously" Title="Can Cast Spontaneous Spells" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        await LoadDataAsync("classes", cts.Token);
+    }
+}

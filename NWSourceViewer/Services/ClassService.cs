@@ -54,7 +54,7 @@ public class ClassService : IClassService
             var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(classModel.SavingThrowTable, cancellationToken);
             var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(classModel.FeatsTable, cancellationToken);
             var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(classModel.BonusFeatsTable, cancellationToken);
-            var featTableTask = fileLoader.Load2daAsync<FeatModel>("feat", cancellationToken);
+            var featTableTask = fileLoader.Load2daAsync<FeatModel>(config.FeatsFileName, cancellationToken);
             // TODO: load other tables.
             await Task.WhenAll(tlkTask, abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask, featTableTask);
             var tlk = await tlkTask;

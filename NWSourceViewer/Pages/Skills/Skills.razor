@@ -14,11 +14,7 @@
                 <a href="/skills/@data.Index">@data.Index</a>
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="SkillModel" Property="Name" Title="Name">
-            <Template Context="data">
-                @Tlk[data.Name]
-            </Template>
-        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="SkillModel" Property="NameString" Title="Name" />
     </Columns>
 </RadzenDataGrid>
 

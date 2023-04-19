@@ -1,7 +1,7 @@
 ﻿namespace NWSourceViewer.Models.Classes;
 public class ClassSkillModel : Base2daRowModel
 {
-    public override void ConvertData(Dictionary<string, string> data)
+    public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
     {
         Index = data["Index"].ToUint();
         SkillLabel = data["SkillLabel"];

@@ -2,13 +2,14 @@
 
 public class FeatModel : Base2daRowModel
 {
-    public override void ConvertData(Dictionary<string, string> data)
+    public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
     {
         Index = data["Index"].ToUint();
         Feat = data["FEAT"].ToNUint();
         if (Feat != null)
         {
             HasData = true;
+            NameString = tlk[(uint)Feat];
             Description = data["DESCRIPTION"].ToNUint();
             MinAttackBonus = data["MINATTACKBONUS"].ToNUint();
             MinStr = data["MINSTR"].ToNUint();

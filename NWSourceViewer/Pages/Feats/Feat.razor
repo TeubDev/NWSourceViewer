@@ -23,7 +23,7 @@
     {
         CancellationTokenSource cts = new CancellationTokenSource();
         var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
-        var fullFeatListTask = FileLoader.Load2daAsync<FeatModel>("feat", cts.Token);
+        var fullFeatListTask = FileLoader.Load2daAsync<FeatModel>(Config.FeatsFileName, cts.Token);
         await Task.WhenAll(tlkTask, fullFeatListTask);
         Tlk = await tlkTask;
         var fullFeatList = await fullFeatListTask;

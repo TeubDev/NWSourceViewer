@@ -5,7 +5,7 @@
 /// </summary>
 public class ClassSavingThrowModel : Base2daRowModel
 {
-    public override void ConvertData(Dictionary<string, string> data)
+    public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
     {
         Index = data["Index"].ToUint();
         string fortDataValue = data["FortSave"];

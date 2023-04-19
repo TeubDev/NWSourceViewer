@@ -21,6 +21,14 @@ public interface IFileLoader
     Task<List<T>?> Load2daAsync<T>(string fileName, CancellationToken cancellationToken) where T : Base2daRowModel, new();
 
     /// <summary>
+    /// Calls <see cref="Load2daAsync{T}(string, CancellationToken)"/> and then attempts to fetch a single row.
+    /// </summary>
+    /// <remarks>
+    /// If something went wrong (table not loaded, row ID out of range, etc.), returns null.
+    /// </remarks>
+    Task<T?> Load2daRowAsync<T>(string fileName, uint rowId, CancellationToken cancellationToken) where T : Base2daRowModel, new();
+
+    /// <summary>
     /// Loads the TLK file(s). If they didn't load properly, the result will be empty.
     /// </summary>
     Task<TlkDictionary> LoadTlkAsync(CancellationToken cancellationToken);
@@ -31,19 +39,20 @@ public class FileLoader : IFileLoader
 {
     private readonly HttpClient httpClient;
     private readonly IAsyncPolicy cachePolicy;
-    private readonly IConfiguration configuration;
+    private readonly Config config;
 
-    public FileLoader(HttpClient httpClient, IAsyncPolicy cachePolicy, IConfiguration configuration)
+    public FileLoader(HttpClient httpClient, IAsyncPolicy cachePolicy, Config configuration)
     {
         this.httpClient = httpClient;
         this.cachePolicy = cachePolicy;
-        this.configuration = configuration;
+        this.config = configuration;
     }
 
     public async Task<List<T>?> Load2daAsync<T>(string fileName, CancellationToken cancellationToken) where T : Base2daRowModel, new()
     { // TODO: Convert to returning a dictionary.
         return await cachePolicy.ExecuteAsync(async context =>
         {
+            var tlkTask = LoadTlkAsync(cancellationToken);
             var response = await httpClient.GetAsync($"/source/{fileName}.2da", cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
@@ -54,6 +63,7 @@ public class FileLoader : IFileLoader
                 }
             }
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+            var tlk = await tlkTask;
 
             string[]? rows = responseBody.Split("\r\n");
             var headers = rows[2].Split2daRow();
@@ -70,7 +80,7 @@ public class FileLoader : IFileLoader
                         dataRow[headers[colIndex]] = row[colIndex];
                     }
                     var typedRow = new T();
-                    typedRow.ConvertData(dataRow);
+                    typedRow.ConvertData(dataRow, tlk);
                     data.Add(typedRow);
                 }
             }
@@ -78,12 +88,12 @@ public class FileLoader : IFileLoader
         }, new Context(fileName + " 2da"));
     }
 
-    private async Task<T?> Load2daRowAsync<T>(string fileName, uint RowId, CancellationToken cancellationToken) where T : Base2daRowModel, new()
+    public async Task<T?> Load2daRowAsync<T>(string fileName, uint rowId, CancellationToken cancellationToken) where T : Base2daRowModel, new()
     {
         var table = await Load2daAsync<T>(fileName, cancellationToken);
-        if (table?.Count > RowId)
+        if (table?.Count > rowId)
         {
-            return table[(int)RowId];
+            return table[(int)rowId];
         }
         return null;
     }
@@ -96,7 +106,7 @@ public class FileLoader : IFileLoader
             var dialogResponseBody = await dialogResponse.Content.ReadAsByteArrayAsync(cancellationToken);
             var tlkEntries = new TlkDictionary();
             tlkEntries.AddTlkFile(dialogResponseBody);
-            var customResponse = await httpClient.GetAsync($"/source/{configuration["tlkFileName"]}", cancellationToken);
+            var customResponse = await httpClient.GetAsync($"/source/{config.TlkFileName}", cancellationToken);
             if (customResponse.IsSuccessStatusCode)
             {
                 var customResponseBody = await customResponse.Content.ReadAsByteArrayAsync(cancellationToken);

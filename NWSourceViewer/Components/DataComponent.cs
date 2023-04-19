@@ -8,9 +8,10 @@ public class DataComponent : ComponentBase
 {
     [Inject]
     protected NavigationManager NavManager { get; set; } = default!;
-
     [Inject]
     protected IFileLoader FileLoader { get; set; } = default!;
+    [Inject]
+    protected Config Config { get; set; } = default!;
     protected TlkDictionary? Tlk { get; set; } = null;
 
     protected virtual bool IsLoaded { get { return Tlk != null; } }

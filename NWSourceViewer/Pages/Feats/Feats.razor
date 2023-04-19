@@ -12,11 +12,7 @@
                 ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(FeatModel model) => GoToFeat(model.Index)">
         <Columns>
             <RadzenDataGridColumn TItem="FeatModel" Property="Index" Title="Index" />
-            <RadzenDataGridColumn TItem="FeatModel" Title="Name">
-                <Template Context="data">
-                    @Tlk![(uint)data.Feat!]
-                </Template>
-            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="FeatModel" property="NameString" Title="Name" />
         </Columns>
     </RadzenDataGrid>
 }

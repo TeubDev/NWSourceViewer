@@ -4,9 +4,9 @@
 
 @if (IsLoaded)
 {
-    <PageTitle>The @Tlk![model!.ClassModel.Name] Class</PageTitle>
+    <PageTitle>The @model!.ClassModel.NameString Class</PageTitle>
 
-    <h1>The @Tlk![model!.ClassModel.Name] Class</h1>
+    <h1>The @model!.ClassModel.NameString Class</h1>
 
     <div class="container">
         <div class="row">
@@ -14,7 +14,7 @@
                 Name:
             </div>
             <div class="col">
-                @Tlk[model.ClassModel.Name]
+                @model!.ClassModel.NameString
             </div>
         </div>
         <div class="row">
@@ -88,7 +88,7 @@
     <div>
         Description:
     </div>
-    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk[model.ClassModel.Description]</textarea>
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![model.ClassModel.Description]</textarea>
 }
 
 @code {

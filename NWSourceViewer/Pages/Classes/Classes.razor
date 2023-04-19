@@ -12,18 +12,7 @@
                 ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(ClassModel model) => GoToClass(model.Index)">
         <Columns>
             <RadzenDataGridColumn TItem="ClassModel" Property="Index" Title="Index" />
-            <RadzenDataGridColumn TItem="ClassModel" Property="Name" Title="Name">
-                <Template Context="data">
-                    @if (data.HasData)
-                    {
-                        @Tlk![data.Name]
-                    }
-                    else
-                    {
-                        @data.Name
-                    }
-                </Template>
-            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassModel" Property="NameString" Title="Name" />
             <RadzenDataGridColumn TItem="ClassModel" Property="HitDie" Title="Hit Die" />
             <RadzenDataGridColumn TItem="ClassModel" Property="SkillPointBase" Title="Skill Point Base" />
             <RadzenDataGridColumn TItem="ClassModel" Property="PlayerClass" Title="Player Class" />
@@ -53,6 +42,6 @@
     protected override async Task OnInitializedAsync()
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        await LoadDataAsync("classes", cts.Token);
+        await LoadDataAsync(Config.ClassesFileName, cts.Token);
     }
 }

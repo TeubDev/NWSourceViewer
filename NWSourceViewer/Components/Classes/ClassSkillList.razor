@@ -11,7 +11,7 @@
         @for (int i = 0; i < classSkills.Count; i++)
     {
         <a href="/skills/@classSkills[i].Index">
-                @Tlk![classSkills[i].Name]
+                @classSkills[i].NameString
             </a>
             @if (i < classSkills.Count - 1)
         {
@@ -28,7 +28,7 @@
         @for (int i = 0; i < crossClassSkills.Count; i++)
     {
         <a href="/skills/@crossClassSkills[i].Index">
-                @Tlk![crossClassSkills[i].Name]
+                @crossClassSkills[i].NameString
             </a>
             @if (i < crossClassSkills.Count - 1)
         {
@@ -45,7 +45,7 @@
         @for (int i = 0; i < unavailableSkills.Count; i++)
     {
         <a href="/skills/@unavailableSkills[i].Index">
-                @Tlk![unavailableSkills[i].Name]
+                @unavailableSkills[i].NameString
             </a>
             @if (i < unavailableSkills.Count - 1)
         {
@@ -71,7 +71,7 @@ protected override async Task OnInitializedAsync()
         CancellationTokenSource cts = new CancellationTokenSource();
 
         var loadTask = LoadDataAsync(TableName, cts.Token);
-        var skillsTableTask = FileLoader.Load2daAsync<SkillModel>("skills", cts.Token);
+        var skillsTableTask = FileLoader.Load2daAsync<SkillModel>(Config.SkillsFileName, cts.Token);
         await Task.WhenAll(loadTask, skillsTableTask);
         var skillsTable = await skillsTableTask;
 

@@ -3,9 +3,9 @@
 /// <summary>
 /// Indicates how a class can or cannot get a particular feat.
 /// </summary>
-public class ClassFeatModel : Base2daRowModel // TODO: Delete this eventually if it looks unused.
+public class ClassFeatModel : Base2daRowModel
 {
-    public override void ConvertData(Dictionary<string, string> data)
+    public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
     {
         Index = data["Index"].ToUint();
         var featIndexDataValue = data["FeatIndex"];

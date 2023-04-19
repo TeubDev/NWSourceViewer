@@ -2,7 +2,7 @@
 
 public class SkillModel : Base2daRowModel
 {
-    public override void ConvertData(Dictionary<string, string> data)
+    public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
     {
         Index = data["Index"].ToUint();
         var nameDataValue = data["Name"];
@@ -10,6 +10,7 @@ public class SkillModel : Base2daRowModel
         {
             HasData = true;
             Name = nameDataValue.ToUint();
+            NameString = tlk[Name];
             Description = data["Description"].ToUint();
             Untrained = data["Untrained"].ToBool();
             KeyAbility = data["KeyAbility"];

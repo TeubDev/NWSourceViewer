@@ -3,12 +3,101 @@
 
 @if (IsLoaded)
 {
-    <PageTitle>The @Tlk![(uint)model!.Feat!] Class</PageTitle>
+    <PageTitle>The @model!.NameString Class</PageTitle>
 
-    <h1>The @Tlk![(uint)model!.Feat!] Class</h1>
-    <text>Coming soon.</text>
+    <h1>The @model!.NameString Class</h1>
+    <div class="container">
+        @if (model.MinAttackBonus != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum attack bonus:
+                </div>
+                <div class="col">
+                    @model.MinAttackBonus
+                </div>
+            </div>
+        }
+        @if (model.MinStr != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum strength:
+                </div>
+                <div class="col">
+                    @model.MinStr
+                </div>
+            </div>
+        }
+        @if (model.MinDex != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum dexterity:
+                </div>
+                <div class="col">
+                    @model.MinDex
+                </div>
+            </div>
+        }
+        @if (model.MinInt != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum intelligence:
+                </div>
+                <div class="col">
+                    @model.MinInt
+                </div>
+            </div>
+        }
+        @if (model.MinWis != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum wisdom:
+                </div>
+                <div class="col">
+                    @model.MinWis
+                </div>
+            </div>
+        }
+        @if (model.MinCon != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum constitution:
+                </div>
+                <div class="col">
+                    @model.MinCon
+                </div>
+            </div>
+        }
+        @if (model.MinCha != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum charisma:
+                </div>
+                <div class="col">
+                    @model.MinCha
+                </div>
+            </div>
+        }
+        @if (model.MinSpellLvl != null)
+        {
+            <div class="row">
+                <div class="col">
+                    Minimum spell level:
+                </div>
+                <div class="col">
+                    @model.MinSpellLvl
+                </div>
+            </div>
+        }
+    </div>
 
-    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk[(uint)model!.Description!]</textarea>
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![(uint)model!.Description!]</textarea>
 }
 
 @code {
@@ -17,19 +106,15 @@
 
     private FeatModel? model = null;
 
-    protected override bool IsLoaded { get { return base.IsLoaded && model != null; } }
+    protected override bool IsLoaded { get { return base.IsLoaded && model?.HasData == true; } }
 
     protected override async Task OnInitializedAsync()
     {
         CancellationTokenSource cts = new CancellationTokenSource();
         var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
-        var fullFeatListTask = FileLoader.Load2daAsync<FeatModel>(Config.FeatsFileName, cts.Token);
-        await Task.WhenAll(tlkTask, fullFeatListTask);
+        var featTask = FileLoader.Load2daRowAsync<FeatModel>(Config.FeatsFileName, (uint)Id, cts.Token);
+        await Task.WhenAll(tlkTask, featTask);
         Tlk = await tlkTask;
-        var fullFeatList = await fullFeatListTask;
-        if (fullFeatList != null)
-        {
-            model = fullFeatList[Id];
-        }
+        model = await featTask;
     }
 }

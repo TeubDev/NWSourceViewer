@@ -1,0 +1,84 @@
+﻿@page "/races/{Id:int}"
+@inherits DataComponent
+
+@if (IsLoaded)
+{
+    <PageTitle>The @model!.NameString Race</PageTitle>
+
+    <h1>The @model!.NameString Class</h1>
+    <div class="container">
+        @if (model.StrengthAdjustment != 0 || model.DexterityAdjustment != 0 || model.IntelligenceAdjustment != 0 || model.CharismaAdjustment != 0 || model.WisdomAdjustment != 0 || model.ConstitutionAdjustment != 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Racial ability modifiers:
+                </div>
+                <div class="col">
+                    @if (model.StrengthAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Str", model.StrengthAdjustment)
+                        </div>
+                    }
+                    @if (model.DexterityAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Dex", model.DexterityAdjustment)
+                        </div>
+                    }
+                    @if (model.IntelligenceAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Int", model.IntelligenceAdjustment)
+                        </div>
+                    }
+                    @if (model.CharismaAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Cha", model.CharismaAdjustment)
+                        </div>
+                    }
+                    @if (model.WisdomAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Wis", model.WisdomAdjustment)
+                        </div>
+                    }
+                    @if (model.ConstitutionAdjustment != 0)
+                    {
+                        <div>
+                            @GetAbilityDisplay("Con", model.ConstitutionAdjustment)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![(uint)model!.Description!]</textarea>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private RaceModel? model = null;
+
+    protected override bool IsLoaded { get { return base.IsLoaded && model?.HasData == true; } }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
+        var raceTask = FileLoader.Load2daRowAsync<RaceModel>(Constants.RacesFileName, (uint)Id, cts.Token);
+        await Task.WhenAll(tlkTask, raceTask);
+        Tlk = await tlkTask;
+        model = await raceTask;
+    }
+
+    // TODO: Move into a RaceService and have a FullRaceModel.
+    private string GetAbilityDisplay(string abilityShorthand, int adjustment)
+    {
+        return $"{abilityShorthand} {adjustment.ToString("+#;-#;0")}";
+    }
+}

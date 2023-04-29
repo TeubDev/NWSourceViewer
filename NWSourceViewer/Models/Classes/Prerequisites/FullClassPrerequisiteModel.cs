@@ -1,4 +1,5 @@
 ﻿using NWSourceViewer.Models.Feats;
+using NWSourceViewer.Models.Races;
 
 namespace NWSourceViewer.Models.Classes.Prerequisites;
 

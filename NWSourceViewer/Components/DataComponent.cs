@@ -39,4 +39,9 @@ public class DataComponent : ComponentBase
     {
         NavManager.NavigateTo($"classes/{Id}");
     }
+
+    protected void GoToRace(uint Id)
+    {
+        NavManager.NavigateTo($"races/{Id}");
+    }
 }

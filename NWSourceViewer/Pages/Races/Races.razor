@@ -1,0 +1,34 @@
+﻿@page "/races"
+@inherits DataTableComponent<RaceModel>
+
+<PageTitle>Races</PageTitle>
+
+<h1>Races</h1>
+
+@if (IsLoaded)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.SimpleWithMenu"
+                AllowSorting="true" PageSize="100" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(RaceModel model) => GoToRace(model.Index)">
+        <Columns>
+            <RadzenDataGridColumn TItem="RaceModel" Property="Index" Title="Index" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="NameString" Title="Name" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="StrengthAdjustment" Title="Strength Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="DexterityAdjustment" Title="Dexterity Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="IntelligenceAdjustment" Title="Intelligence Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="CharismaAdjustment" Title="Charisma Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="WisdomAdjustment" Title="Wisdom Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="ConstitutionAdjustment" Title="Constitution Adjustment" />
+            <RadzenDataGridColumn TItem="RaceModel" Property="PlayerRace" Title="Player Race" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        await LoadDataAsync(Constants.RacesFileName, cts.Token);
+    }
+
+}

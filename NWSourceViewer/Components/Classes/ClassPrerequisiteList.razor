@@ -1,15 +1,24 @@
 ﻿@using NWSourceViewer.Models.Classes.Prerequisites;
-@inherits DataComponent
-
 
 @if (Prerequisites != null)
 {
     <div class="container">
-        @if(Prerequisites.Bab != null)
+        @if (Prerequisites.ArcaneSpellcastingLevel > 0)
         {
             <div class="row">
                 <div class="col">
-                    BAB
+                    At least one arcane spellcasting class of this level:
+                </div>
+                <div class="col">
+                    @Prerequisites.ArcaneSpellcastingLevel
+                </div>
+            </div>
+        }
+        @if (Prerequisites.Bab > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Base attack bonus:
                 </div>
                 <div class="col">
                     @Prerequisites.Bab
@@ -46,6 +55,39 @@
                 </div>
                 <div class="col">
                     <CommaLinkList LinkList="@Prerequisites.OrClasses.Select(f => new KeyValuePair<string, string>(f.NameString, $"/classes/{f.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+        @if (Prerequisites.Races.Count > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required to be one of these races:
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@Prerequisites.Races.Select(r => new KeyValuePair<string, string>(r.NameString, $"/races/{r.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+        @if (Prerequisites.Skills.Count > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required to have so many ranks in these skills:
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@Prerequisites.Skills.Select(r => new KeyValuePair<string, string>($"{r.Skill.NameString} {r.Ranks}", $"/skills/{r.Skill.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+        @if (Prerequisites.MinSpellcastingLevel > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required to have at least this many levels in a spellcasting class:
+                </div>
+                <div class="col">
+                    @Prerequisites.MinSpellcastingLevel
                 </div>
             </div>
         }

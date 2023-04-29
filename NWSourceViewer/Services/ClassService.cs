@@ -3,6 +3,7 @@ using NWSourceViewer.Models;
 using NWSourceViewer.Models.Classes;
 using NWSourceViewer.Models.Classes.Prerequisites;
 using NWSourceViewer.Models.Feats;
+using NWSourceViewer.Models.Races;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NWSourceViewer.Services;
@@ -176,12 +177,21 @@ public class ClassService : IClassService
                             }
                             break;
                         case ClassPrerequisiteType.Race:
-                            break;
-                        case ClassPrerequisiteType.Save:
+                            var matchingRace = await fileLoader.Load2daRowAsync<RaceModel>(Constants.RacesFileName, prerequisite.NumericReqParam1, cancellationToken);
+                            if (matchingRace != null)
+                            {
+                                fullClass.Prerequisites.Races.Add(matchingRace);
+                            }
                             break;
                         case ClassPrerequisiteType.Skill:
+                            var matchingSkill = await fileLoader.Load2daRowAsync<SkillModel>(Constants.SkillsFileName, prerequisite.NumericReqParam1, cancellationToken);
+                            if (matchingSkill != null)
+                            {
+                                fullClass.Prerequisites.Skills.Add(new ClassSkillPrerequisite(matchingSkill, prerequisite.NumericReqParam2));
+                            }
                             break;
                         case ClassPrerequisiteType.Spell:
+                            fullClass.Prerequisites.MinSpellcastingLevel = prerequisite.NumericReqParam1;
                             break;
                         case ClassPrerequisiteType.Var:
                             fullClass.Prerequisites.Variable = new ClassVariablePrerequisite(

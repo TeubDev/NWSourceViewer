@@ -11,7 +11,7 @@ public class FullClassPrerequisiteModel
     /// <remarks>
     /// null indicates no arcane spellcasting is required.
     /// </remarks>
-    public uint? ArcaneSpellcastingLevel { get; set; } = null;
+    public uint ArcaneSpellcastingLevel { get; set; }
 
     /// <summary>
     /// The required base attack bonus
@@ -19,7 +19,7 @@ public class FullClassPrerequisiteModel
     /// <remarks>
     /// null indicates no base attack bonus is required.
     /// </remarks>
-    public uint? Bab { get; set; } = null;
+    public uint Bab { get; set; }
 
     /// <summary>
     /// A list of classes where at least one of them matching is enough to fulfill the prerequisite.
@@ -47,12 +47,12 @@ public class FullClassPrerequisiteModel
     public List<ClassSkillPrerequisite> Skills { get; set; } = new List<ClassSkillPrerequisite>();
 
     /// <summary>
-    /// The required spell level a character needs to be able to cast in order to qualify for the class.
+    /// The required level a character needs to have in at least one spellcasting class to qualify for the class.
     /// </summary>
     /// <remarks>
     /// null indicates no spell level requirements.
     /// </remarks>
-    public uint? MinSpellcastingLevel { get; set; } = null;
+    public uint MinSpellcastingLevel { get; set; }
 
     /// <summary>
     /// A variable that is required in order to take levels in a class.

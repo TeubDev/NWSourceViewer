@@ -1,0 +1,62 @@
+﻿@using NWSourceViewer.Models.Classes.Prerequisites;
+@inherits DataComponent
+
+
+@if (Prerequisites != null)
+{
+    <div class="container">
+        @if(Prerequisites.Bab != null)
+        {
+            <div class="row">
+                <div class="col">
+                    BAB
+                </div>
+                <div class="col">
+                    @Prerequisites.Bab
+                </div>
+            </div>
+        }
+        @if (Prerequisites.Feats.Count > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required feats:
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@Prerequisites.Feats.Select(f => new KeyValuePair<string, string>(f.NameString, $"/feats/{f.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+        @if (Prerequisites.OrFeats.Count > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required to have at least one of these feats:
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@Prerequisites.OrFeats.Select(f => new KeyValuePair<string, string>(f.NameString, $"/feats/{f.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+        @if (Prerequisites.OrClasses.Count > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    Required to have at least one of these classes:
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@Prerequisites.OrClasses.Select(f => new KeyValuePair<string, string>(f.NameString, $"/classes/{f.Index}")).ToList()" />
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <text>None</text>
+}
+
+@code {
+    [Parameter]
+    public FullClassPrerequisiteModel? Prerequisites { get; set; } = null;
+}

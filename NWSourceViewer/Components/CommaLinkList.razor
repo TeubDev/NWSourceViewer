@@ -1,0 +1,18 @@
+﻿@for (int i = 0; i < LinkList.Count; i++)
+{
+    <a href="@LinkList[i].Value">
+        @LinkList[i].Key
+    </a>
+    @if (i < LinkList.Count - 1)
+    {
+        <text>, </text>
+    }
+}
+
+@code {
+    /// <summary>
+    /// Each key is the text that should be shown. Each value is the hyperlink.
+    /// </summary>
+    [Parameter]
+    public List<KeyValuePair<string, string>> LinkList { get; set; } = default!;
+}

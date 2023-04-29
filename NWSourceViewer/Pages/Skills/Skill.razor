@@ -51,7 +51,7 @@ public int Id { get; set; }
 
 protected override async Task OnInitializedAsync()
 {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    await LoadDataAsync("skills", Id, cts.Token);
+CancellationTokenSource cts = new CancellationTokenSource();
+await LoadDataAsync("skills", Id, cts.Token);
 }
 }

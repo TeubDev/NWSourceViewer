@@ -9,7 +9,7 @@ public class ClassBonusFeatModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         var bonusDataValue = data["Bonus"];
-        if (bonusDataValue != "****")
+        if (bonusDataValue != Constants.NullString)
         {
             HasData = true;
             Bonus = bonusDataValue.ToUint();

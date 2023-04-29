@@ -9,7 +9,7 @@ public class ClassFeatModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         var featIndexDataValue = data["FeatIndex"];
-        if (featIndexDataValue != "****")
+        if (featIndexDataValue != Constants.NullString)
         {
             HasData = true;
             FeatIndex = featIndexDataValue.ToUint();

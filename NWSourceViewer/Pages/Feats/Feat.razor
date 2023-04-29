@@ -8,8 +8,8 @@
     <h1>The @model!.NameString Class</h1>
     <div class="container">
         @if (model.MinAttackBonus != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum attack bonus:
                 </div>
@@ -17,10 +17,10 @@
                     @model.MinAttackBonus
                 </div>
             </div>
-        }
+    }
         @if (model.MinStr != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum strength:
                 </div>
@@ -28,10 +28,10 @@
                     @model.MinStr
                 </div>
             </div>
-        }
+    }
         @if (model.MinDex != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum dexterity:
                 </div>
@@ -39,10 +39,10 @@
                     @model.MinDex
                 </div>
             </div>
-        }
+    }
         @if (model.MinInt != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum intelligence:
                 </div>
@@ -50,10 +50,10 @@
                     @model.MinInt
                 </div>
             </div>
-        }
+    }
         @if (model.MinWis != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum wisdom:
                 </div>
@@ -61,10 +61,10 @@
                     @model.MinWis
                 </div>
             </div>
-        }
+    }
         @if (model.MinCon != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum constitution:
                 </div>
@@ -72,10 +72,10 @@
                     @model.MinCon
                 </div>
             </div>
-        }
+    }
         @if (model.MinCha != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum charisma:
                 </div>
@@ -83,10 +83,10 @@
                     @model.MinCha
                 </div>
             </div>
-        }
+    }
         @if (model.MinSpellLvl != null)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Minimum spell level:
                 </div>
@@ -94,27 +94,27 @@
                     @model.MinSpellLvl
                 </div>
             </div>
-        }
+    }
     </div>
 
     <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![(uint)model!.Description!]</textarea>
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+[Parameter]
+public int Id { get; set; }
 
-    private FeatModel? model = null;
+private FeatModel? model = null;
 
-    protected override bool IsLoaded { get { return base.IsLoaded && model?.HasData == true; } }
+protected override bool IsLoaded { get { return base.IsLoaded && model?.HasData == true; } }
 
-    protected override async Task OnInitializedAsync()
-    {
-        CancellationTokenSource cts = new CancellationTokenSource();
-        var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
-        var featTask = FileLoader.Load2daRowAsync<FeatModel>(Config.FeatsFileName, (uint)Id, cts.Token);
-        await Task.WhenAll(tlkTask, featTask);
-        Tlk = await tlkTask;
-        model = await featTask;
-    }
+protected override async Task OnInitializedAsync()
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
+        var featTask = FileLoader.Load2daRowAsync<FeatModel>(Constants.FeatsFileName, (uint)Id, cts.Token);
+    await Task.WhenAll(tlkTask, featTask);
+    Tlk = await tlkTask;
+    model = await featTask;
+}
 }

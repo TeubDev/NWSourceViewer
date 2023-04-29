@@ -9,7 +9,7 @@ public class ClassAttackBonusModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         string babDataValue = data["BAB"];
-        if (babDataValue != "****")
+        if (babDataValue != Constants.NullString)
         {
             HasData = true;
             Bab = babDataValue.ToUint();

@@ -6,7 +6,7 @@ public class SkillModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         var nameDataValue = data["Name"];
-        if (nameDataValue != "****")
+        if (nameDataValue != Constants.NullString)
         {
             HasData = true;
             Name = nameDataValue.ToUint();

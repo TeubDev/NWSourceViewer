@@ -9,7 +9,7 @@ public class ClassSavingThrowModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         string fortDataValue = data["FortSave"];
-        if (fortDataValue != "****")
+        if (fortDataValue != Constants.NullString)
         {
             HasData = true;
             FortSave = fortDataValue.ToUint();

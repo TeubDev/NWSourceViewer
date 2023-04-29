@@ -34,8 +34,8 @@
             </div>
         </div>
         @if (model.ClassModel.SpellCaster)
-        {
-            <div class="row">
+    {
+        <div class="row">
                 <div class="col">
                     Spellcaster?
                 </div>
@@ -43,22 +43,22 @@
                     Yes
                 </div>
             </div>
-            <div class="row">
+        <div class="row">
                 <div class="col">
                     Type:
                 </div>
                 <div class="col">
                     @if (model.ClassModel.Arcane)
-                    {
-                        <text>Arcane</text>
-                    }
-                    else
-                    {
-                        <text>Divine</text>
-                    }
+                {
+                    <text>Arcane</text>
+                }
+                else
+                {
+                    <text>Divine</text>
+                }
                 </div>
             </div>
-            <div class="row">
+        <div class="row">
                 <div class="col">
                     Spell gain table:
                 </div>
@@ -66,7 +66,7 @@
                     @model.ClassModel.SpellGainTable
                 </div>
             </div>
-            <div class="row">
+        <div class="row">
                 <div class="col">
                     Spells known table:
                 </div>
@@ -74,16 +74,18 @@
                     @model.ClassModel.SpellKnownTable
                 </div>
             </div>
-        }
+    }
     </div>
-    <ClassSkillList TableName="@model.ClassModel.SkillsTable" />
+    <div>Prerequisites:</div>
+    <ClassPrerequisiteList Prerequisites="@model.Prerequisites" />
+    <ClassSkillList Class="@model" />
     <div>Levels:</div>
     <ClassTable ClassLevels="model.ClassLevels" />
     @if (model.EpicClassLevels.Count > 0)
-    {
-        <div>Epic levels:</div>
+{
+    <div>Epic levels:</div>
         <ClassTable ClassLevels="model.EpicClassLevels" />
-    }
+}
 
     <div>
         Description:
@@ -92,21 +94,21 @@
 }
 
 @code {
-    // TODO: Create a CSS class for the textarea.
-    [Parameter]
-    public int Id { get; set; }
+// TODO: Create a CSS class for the textarea.
+[Parameter]
+public int Id { get; set; }
 
-    private FullClassModel? model = null;
+private FullClassModel? model = null;
 
-    protected override bool IsLoaded { get { return base.IsLoaded && model != null; } }
+protected override bool IsLoaded { get { return base.IsLoaded && model != null; } }
 
-    protected override async Task OnInitializedAsync()
-    {
-        CancellationTokenSource cts = new CancellationTokenSource();
-        var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
-        var fullClassTask = ClassService.GetFullClassModelAsync((uint)Id, cts.Token);
-        await Task.WhenAll(tlkTask, fullClassTask);
-        Tlk = await tlkTask;
-        model = await fullClassTask;
-    }
+protected override async Task OnInitializedAsync()
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
+    var fullClassTask = ClassService.GetFullClassModelAsync((uint)Id, cts.Token);
+    await Task.WhenAll(tlkTask, fullClassTask);
+    Tlk = await tlkTask;
+    model = await fullClassTask;
+}
 }

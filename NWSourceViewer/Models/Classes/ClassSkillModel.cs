@@ -5,7 +5,7 @@ public class ClassSkillModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         SkillLabel = data["SkillLabel"];
-        if (SkillLabel != "****")
+        if (SkillLabel != Constants.NullString)
         {
             HasData = true;
             SkillIndex = data["SkillIndex"].ToUint();

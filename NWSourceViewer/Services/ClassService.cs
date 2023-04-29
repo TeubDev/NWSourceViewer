@@ -1,6 +1,9 @@
-﻿using NWSourceViewer.Models;
+﻿using NWSourceViewer.Components.Classes;
+using NWSourceViewer.Models;
 using NWSourceViewer.Models.Classes;
+using NWSourceViewer.Models.Classes.Prerequisites;
 using NWSourceViewer.Models.Feats;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NWSourceViewer.Services;
 
@@ -9,11 +12,6 @@ namespace NWSourceViewer.Services;
 /// </summary>
 public interface IClassService
 {
-    /// <summary>
-    /// Gets the class for the given ID. Returns null if the class was not found.
-    /// </summary>
-    Task<ClassModel?> GetClassModelAsync(uint classId, CancellationToken cancellationToken);
-
     /// <summary>
     /// Gets the class for the given ID along with all other subtables. Returns null if the class or one of its subclasses was not found.
     /// </summary>
@@ -32,76 +30,167 @@ public class ClassService : IClassService
         this.config = config;
     }
 
-    public async Task<ClassModel?> GetClassModelAsync(uint classId, CancellationToken cancellationToken)
-    {
-        var classes = await fileLoader.Load2daAsync<ClassModel>("classes", cancellationToken);
-        if (classes?.Count > classId)
-        {
-            return classes[(int)classId];
-        }
-        return null;
-    }
-
     public async Task<FullClassModel?> GetFullClassModelAsync(uint classId, CancellationToken cancellationToken)
     {
         FullClassModel? fullClassModel = null;
-        var classModel = await GetClassModelAsync(classId, cancellationToken);
-        if (classModel != null)
+        var classModelTask = fileLoader.Load2daRowAsync<ClassModel>(Constants.ClassesFileName, classId, cancellationToken);
+        var featsTableTask = fileLoader.Load2daAsync<FeatModel>(Constants.FeatsFileName, cancellationToken);
+        await Task.WhenAll(classModelTask, featsTableTask);
+        var classModel = await classModelTask;
+        var featsTable = await featsTableTask;
+        if (classModel != null && featsTable != null)
         {
-            var (maxPreEpicLevel, maxLevel) = classModel.GetMaxLevels(config.MaxPreEpicLevel, config.MaxLevel);
-            var tlkTask = fileLoader.LoadTlkAsync(cancellationToken);
-            var abTableTask = fileLoader.Load2daAsync<ClassAttackBonusModel>(classModel.AttackBonusTable, cancellationToken);
-            var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(classModel.SavingThrowTable, cancellationToken);
-            var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(classModel.FeatsTable, cancellationToken);
-            var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(classModel.BonusFeatsTable, cancellationToken);
-            var featTableTask = fileLoader.Load2daAsync<FeatModel>(config.FeatsFileName, cancellationToken);
-            // TODO: load other tables.
-            await Task.WhenAll(tlkTask, abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask, featTableTask);
-            var tlk = await tlkTask;
-            var abTable = await abTableTask;
-            var savesTable = await savesTableTask;
-            var classFeatTable = await classFeatTableTask;
-            var bonusFeatTable = await bonusFeatTableTask;
-            var featsTable = await featTableTask;
-            if (abTable != null && savesTable != null && classFeatTable != null && bonusFeatTable != null && featsTable != null)
-            {
-                fullClassModel = new FullClassModel(classModel);
-                uint hpMin = 0;
-                uint hpMax = 0;
-                for (int i = 0; i < maxLevel; i++)
-                {
-                    uint level = (uint)i + 1;
-                    hpMin += classModel.HitDie / 2;
-                    hpMax += classModel.HitDie;
-                    var classFeats = classFeatTable.Where(classFeat => classFeat.HasData && classFeat.GrantedOnLevel == level);
+            fullClassModel = new FullClassModel(classModel);
+            await Task.WhenAll(
+                SetClassPrerequisitesAsync(fullClassModel, featsTable, cancellationToken),
+                SetClassLevelsAsync(fullClassModel, featsTable, cancellationToken),
+                SetSkillsAsync(fullClassModel, cancellationToken)
+                );
+        }
 
-                    var classLevel = new ClassLevelModel
+        return fullClassModel;
+    }
+
+    private async Task SetSkillsAsync(FullClassModel fullClass, CancellationToken cancellationToken)
+    {
+        if (fullClass.ClassModel.SkillsTable != Constants.NullString)
+        {
+            var skillsTask = fileLoader.Load2daAsync<SkillModel>(Constants.SkillsFileName, cancellationToken);
+            var classSkillsTask = fileLoader.Load2daAsync<ClassSkillModel>(fullClass.ClassModel.SkillsTable, cancellationToken);
+            await Task.WhenAll(skillsTask, classSkillsTask);
+            var skills = await skillsTask;
+            var classSkills = await classSkillsTask;
+            if (skills != null && classSkills != null)
+            {
+                foreach (var skill in skills)
+                {
+                    var matchingClassSkill = classSkills.FirstOrDefault(classSkill => classSkill.HasData && classSkill.SkillIndex == skill.Index);
+                    if (matchingClassSkill != null)
                     {
-                        Level = level,
-                        BaseAttackBonus = abTable[i].Bab, // TODO: Fix BAB and saves for epic levels.
-                        HitPointMinimum = hpMin,
-                        HitPointMaximum = hpMax,
-                        FortitudeSave = savesTable[i].FortSave,
-                        ReflexSave = savesTable[i].RefSave,
-                        WillSave = savesTable[i].WillSave,
-                        BonusFeatCount = bonusFeatTable[i].Bonus,
-                        AutomaticFeats = classFeats
-                                        .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
-                                        .Select(cf => featsTable[(int)cf.FeatIndex])
-                                        .ToList()
-                    };
-                    if (classLevel.Level <= maxPreEpicLevel)
-                    {
-                        fullClassModel.ClassLevels.Add(classLevel);
+                        if (matchingClassSkill.ClassSkill)
+                        {
+                            fullClass.ClassSkills.Add(skill);
+                        }
+                        else
+                        {
+
+                            fullClass.CrossClassSkills.Add(skill);
+                        }
                     }
                     else
                     {
-                        fullClassModel.EpicClassLevels.Add(classLevel);
+                        fullClass.UnavailableSkills.Add(skill);
                     }
                 }
             }
         }
+    }
 
-        return fullClassModel;
+    private async Task SetClassLevelsAsync(FullClassModel fullClass, List<FeatModel> featsTable, CancellationToken cancellationToken)
+    {
+        var abTableTask = fileLoader.Load2daAsync<ClassAttackBonusModel>(fullClass.ClassModel.AttackBonusTable, cancellationToken);
+        var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(fullClass.ClassModel.SavingThrowTable, cancellationToken);
+        var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(fullClass.ClassModel.FeatsTable, cancellationToken);
+        var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(fullClass.ClassModel.BonusFeatsTable, cancellationToken);
+        await Task.WhenAll(abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask);
+        var abTable = await abTableTask;
+        var savesTable = await savesTableTask;
+        var classFeatTable = await classFeatTableTask;
+        var bonusFeatTable = await bonusFeatTableTask;
+        if (abTable != null && savesTable != null && classFeatTable != null && bonusFeatTable != null)
+        {
+            var (maxPreEpicLevel, maxLevel) = fullClass.ClassModel.GetMaxLevels(Constants.MaxPreEpicLevel, config.MaxLevel);
+            uint hpMin = 0;
+            uint hpMax = 0;
+            for (int i = 0; i < maxLevel; i++)
+            {
+                uint level = (uint)i + 1;
+                hpMin += fullClass.ClassModel.HitDie / 2;
+                hpMax += fullClass.ClassModel.HitDie;
+                var classFeats = classFeatTable.Where(classFeat => classFeat.HasData && classFeat.GrantedOnLevel == level);
+
+                var classLevel = new ClassLevelModel
+                {
+                    Level = level,
+                    BaseAttackBonus = abTable[i].Bab, // TODO: Fix BAB and saves for epic levels.
+                    HitPointMinimum = hpMin,
+                    HitPointMaximum = hpMax,
+                    FortitudeSave = savesTable[i].FortSave,
+                    ReflexSave = savesTable[i].RefSave,
+                    WillSave = savesTable[i].WillSave,
+                    BonusFeatCount = bonusFeatTable[i].Bonus,
+                    AutomaticFeats = classFeats
+                                    .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
+                                    .Select(cf => featsTable[(int)cf.FeatIndex])
+                                    .ToList()
+                };
+                if (classLevel.Level <= maxPreEpicLevel)
+                {
+                    fullClass.ClassLevels.Add(classLevel);
+                }
+                else
+                {
+                    fullClass.EpicClassLevels.Add(classLevel);
+                }
+            }
+        }
+    }
+
+    private async Task SetClassPrerequisitesAsync(FullClassModel fullClass, List<FeatModel> featsTable, CancellationToken cancellationToken)
+    {
+        if (fullClass.ClassModel.PreReqTable != Constants.NullString)
+        {
+            var prerequisites = await fileLoader.Load2daAsync<ClassPrerequisiteModel>(fullClass.ClassModel.PreReqTable, cancellationToken);
+            if (prerequisites != null)
+            {
+                fullClass.Prerequisites = new FullClassPrerequisiteModel();
+                foreach (var prerequisite in prerequisites)
+                {
+                    switch (prerequisite.ReqType)
+                    {
+                        case ClassPrerequisiteType.ArcSpell:
+                            fullClass.Prerequisites.ArcaneSpellcastingLevel = prerequisite.NumericReqParam1;
+                            break;
+                        case ClassPrerequisiteType.Bab:
+                            fullClass.Prerequisites.Bab = prerequisite.NumericReqParam1;
+                            break;
+                        case ClassPrerequisiteType.ClassOr:
+                            var matchingClass = await fileLoader.Load2daRowAsync<ClassModel>(Constants.ClassesFileName, prerequisite.NumericReqParam1, cancellationToken);
+                            if (matchingClass != null)
+                            {
+                                fullClass.Prerequisites.OrClasses.Add(matchingClass);
+                            }
+                            break;
+                        case ClassPrerequisiteType.Feat:
+                            var matchingFeat = featsTable.FirstOrDefault(f => f.Index == prerequisite.NumericReqParam1);
+                            if (matchingFeat != null)
+                            {
+                                fullClass.Prerequisites.Feats.Add(matchingFeat);
+                            }
+                            break;
+                        case ClassPrerequisiteType.FeatOr:
+                            var matchingOrFeat = featsTable.FirstOrDefault(f => f.Index == prerequisite.NumericReqParam1);
+                            if (matchingOrFeat != null)
+                            {
+                                fullClass.Prerequisites.OrFeats.Add(matchingOrFeat);
+                            }
+                            break;
+                        case ClassPrerequisiteType.Race:
+                            break;
+                        case ClassPrerequisiteType.Save:
+                            break;
+                        case ClassPrerequisiteType.Skill:
+                            break;
+                        case ClassPrerequisiteType.Spell:
+                            break;
+                        case ClassPrerequisiteType.Var:
+                            fullClass.Prerequisites.Variable = new ClassVariablePrerequisite(
+                                prerequisite.ScriptVar ?? "",
+                                (int)prerequisite.NumericReqParam2);
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

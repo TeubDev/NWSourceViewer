@@ -19,4 +19,9 @@ public class ClassLevelModel
     public List<FeatModel> GeneralOrBonusFeats { get; set; } = new List<FeatModel>();
     public List<FeatModel> BonusFeats { get; set; } = new List<FeatModel>();
     public List<FeatModel> AutomaticFeats { get; set; } = new List<FeatModel>();
+
+    /// <summary>
+    /// Indicates which spells of which levels the class knows at this class level. Null means no known spells.
+    /// </summary>
+    public ClassLevelSpellsKnown? SpellsKnown { get; set; }
 }

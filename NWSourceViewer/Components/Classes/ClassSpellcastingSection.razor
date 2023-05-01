@@ -1,0 +1,77 @@
+﻿<h2>Spellcasting</h2>
+
+@if (Class.ClassModel.SpellKnownTable != Constants.NullString)
+{
+    <h3>Spells Known</h3>
+    <RadzenDataGrid Data="Class.ClassLevels" class="unfixed-table-holder">
+        <Columns>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Property="Level" Title="Level" />
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="Cantrips " Visible="Show0">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel0
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="1st" Visible="Show1">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel1
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="2nd" Visible="Show2">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel2
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="3rd" Visible="Show3">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel3
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="4th" Visible="Show4">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel4
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="5th" Visible="Show5">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel5
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="6th" Visible="Show6">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel6
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="7th" Visible="Show7">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel7
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="8th" Visible="Show8">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel8
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ClassLevelModel" Title="9th" Visible="Show9">
+                <Template Context="data">
+                    @data.SpellsKnown?.SpellLevel9
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public FullClassModel Class { get; set; } = default!;
+
+    private bool Show0 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel0 != null);
+    private bool Show1 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel1 != null);
+    private bool Show2 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel2 != null);
+    private bool Show3 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel3 != null);
+    private bool Show4 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel4 != null);
+    private bool Show5 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel5 != null);
+    private bool Show6 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel6 != null);
+    private bool Show7 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel7 != null);
+    private bool Show8 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel8 != null);
+    private bool Show9 => Class.ClassLevels.Any(cl => cl.SpellsKnown?.SpellLevel9 != null);
+}

@@ -140,6 +140,18 @@ public static class Helpers
     }
 
     /// <summary>
+    /// Attempts to get a UInt from the dictionary at the given key. If the key does not exist or the value cannot be converted, returns null.
+    /// </summary>
+    public static uint? GetNUint(this Dictionary<string, string> dictionary, string key)
+    {
+        if (dictionary.TryGetValue(key, out var value))
+        {
+            return value.ToNUint();
+        }
+        return null;
+    }
+
+    /// <summary>
     /// Gets the maximum number of levels allowed pre-epic and maximum levels total for a class, using defaults in place of bad values.
     /// </summary>
     public static (uint maxPreEpicLevel, uint maxLevel) GetMaxLevels(this ClassModel classModel, uint defaultMaxPreEpic, uint defaultMax)

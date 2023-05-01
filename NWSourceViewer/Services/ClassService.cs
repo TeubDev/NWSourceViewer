@@ -93,11 +93,13 @@ public class ClassService : IClassService
         var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(fullClass.ClassModel.SavingThrowTable, cancellationToken);
         var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(fullClass.ClassModel.FeatsTable, cancellationToken);
         var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(fullClass.ClassModel.BonusFeatsTable, cancellationToken);
-        await Task.WhenAll(abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask);
+        var spellsKnownTableTask = fileLoader.Load2daAsync<ClassLevelSpellsKnown>(fullClass.ClassModel.SpellKnownTable, cancellationToken);
+        await Task.WhenAll(abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask, spellsKnownTableTask);
         var abTable = await abTableTask;
         var savesTable = await savesTableTask;
         var classFeatTable = await classFeatTableTask;
         var bonusFeatTable = await bonusFeatTableTask;
+        var spellsKnownTable = await spellsKnownTableTask;
         if (abTable != null && savesTable != null && classFeatTable != null && bonusFeatTable != null)
         {
             var (maxPreEpicLevel, maxLevel) = fullClass.ClassModel.GetMaxLevels(Constants.MaxPreEpicLevel, config.MaxLevel);
@@ -123,7 +125,8 @@ public class ClassService : IClassService
                     AutomaticFeats = classFeats
                                     .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
                                     .Select(cf => featsTable[(int)cf.FeatIndex])
-                                    .ToList()
+                                    .ToList(),
+                    SpellsKnown = spellsKnownTable?.FirstOrDefault(s => s.Index == i)
                 };
                 if (classLevel.Level <= maxPreEpicLevel)
                 {

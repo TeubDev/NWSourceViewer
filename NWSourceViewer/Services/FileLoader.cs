@@ -52,6 +52,10 @@ public class FileLoader : IFileLoader
     { // TODO: Convert to returning a dictionary.
         return await cachePolicy.ExecuteAsync(async context =>
         {
+            if (fileName == Constants.NullString)
+            {
+                return null;
+            }
             var tlkTask = LoadTlkAsync(cancellationToken);
             var response = await httpClient.GetAsync($"/source/{fileName}.2da", cancellationToken);
             if (!response.IsSuccessStatusCode)

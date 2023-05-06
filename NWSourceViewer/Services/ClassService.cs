@@ -93,13 +93,15 @@ public class ClassService : IClassService
         var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(fullClass.ClassModel.SavingThrowTable, cancellationToken);
         var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(fullClass.ClassModel.FeatsTable, cancellationToken);
         var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(fullClass.ClassModel.BonusFeatsTable, cancellationToken);
-        var spellsKnownTableTask = fileLoader.Load2daAsync<ClassLevelSpellsKnown>(fullClass.ClassModel.SpellKnownTable, cancellationToken);
+        var spellsKnownTableTask = fileLoader.Load2daAsync<ClassLevelSpells>(fullClass.ClassModel.SpellKnownTable, cancellationToken);
+        var spellsGainedTableTask = fileLoader.Load2daAsync<ClassLevelSpells>(fullClass.ClassModel.SpellGainTable, cancellationToken);
         await Task.WhenAll(abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask, spellsKnownTableTask);
         var abTable = await abTableTask;
         var savesTable = await savesTableTask;
         var classFeatTable = await classFeatTableTask;
         var bonusFeatTable = await bonusFeatTableTask;
         var spellsKnownTable = await spellsKnownTableTask;
+        var spellsGainedTable = await spellsGainedTableTask;
         if (abTable != null && savesTable != null && classFeatTable != null && bonusFeatTable != null)
         {
             var (maxPreEpicLevel, maxLevel) = fullClass.ClassModel.GetMaxLevels(Constants.MaxPreEpicLevel, config.MaxLevel);
@@ -126,7 +128,8 @@ public class ClassService : IClassService
                                     .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
                                     .Select(cf => featsTable.First(f => f.Index == cf.FeatIndex))
                                     .ToList(),
-                    SpellsKnown = spellsKnownTable?.FirstOrDefault(s => s.Index == i)
+                    SpellsKnown = spellsKnownTable?.FirstOrDefault(s => s.Index == i),
+                    SpellsGained = spellsGainedTable?.FirstOrDefault(s => s.Index == i),
                 };
                 if (classLevel.Level <= maxPreEpicLevel)
                 {

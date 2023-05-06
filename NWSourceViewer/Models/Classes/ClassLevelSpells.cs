@@ -1,9 +1,9 @@
 ﻿namespace NWSourceViewer.Models.Classes
 {
     /// <summary>
-    /// Represents the number of spells known at each spell level for a particular class level.
+    /// Represents the number of spells known or gained at each spell level for a particular class level.
     /// </summary>
-    public class ClassLevelSpellsKnown : Base2daRowModel
+    public class ClassLevelSpells : Base2daRowModel
     {
         public override void ConvertData(Dictionary<string, string> data, TlkDictionary tlk)
         {

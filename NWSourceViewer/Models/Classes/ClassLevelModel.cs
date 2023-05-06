@@ -21,7 +21,12 @@ public class ClassLevelModel
     public List<FeatModel> AutomaticFeats { get; set; } = new List<FeatModel>();
 
     /// <summary>
-    /// Indicates which spells of which levels the class knows at this class level. Null means no known spells.
+    /// Indicates how many spells of which levels the class knows at this class level. Null means no known spells.
     /// </summary>
-    public ClassLevelSpellsKnown? SpellsKnown { get; set; }
+    public ClassLevelSpells? SpellsKnown { get; set; }
+
+    /// <summary>
+    /// Indicates the number of slots of which levels the class has at this class level. Null means no spell slots.
+    /// </summary>
+    public ClassLevelSpells? SpellsGained { get; set; }
 }

@@ -1,0 +1,29 @@
+﻿@page "/spells"
+@inherits DataTableComponent<SpellModel>
+
+<PageTitle>Spells</PageTitle>
+
+<h1>Spells</h1>
+
+@if (IsLoaded)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.SimpleWithMenu"
+                AllowSorting="true" PageSize="100" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                ShowPagingSummary="true" Data="Data" class="unfixed-table-holder" RowSelect="(SpellModel model) => GoToSpell(model.Index)">
+        <Columns>
+            <RadzenDataGridColumn TItem="SpellModel" Property="Index" Title="Index" />
+            <RadzenDataGridColumn TItem="SpellModel" Property="NameString" Title="Name" />
+            <RadzenDataGridColumn TItem="SpellModel" Property="School" Title="School" />
+            <RadzenDataGridColumn TItem="SpellModel" Property="HasVerbalComponents" Title="Verbal" />
+            <RadzenDataGridColumn TItem="SpellModel" Property="HasSomaticComponents" Title="Somatic" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        await LoadDataAsync(Constants.SpellsFileName, cts.Token);
+    }
+}

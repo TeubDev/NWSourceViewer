@@ -81,7 +81,10 @@ public class FileLoader : IFileLoader
                     }
                     var typedRow = new T();
                     typedRow.ConvertData(dataRow, tlk);
-                    data.Add(typedRow);
+                    if (typedRow.HasData || config.IncludeEmpty2daRows)
+                    {
+                        data.Add(typedRow);
+                    }
                 }
             }
             return data;
@@ -91,11 +94,7 @@ public class FileLoader : IFileLoader
     public async Task<T?> Load2daRowAsync<T>(string fileName, uint rowId, CancellationToken cancellationToken) where T : Base2daRowModel, new()
     {
         var table = await Load2daAsync<T>(fileName, cancellationToken);
-        if (table?.Count > rowId)
-        {
-            return table[(int)rowId];
-        }
-        return null;
+        return table?.FirstOrDefault(r => r.HasData && r.Index == rowId);
     }
 
     public async Task<TlkDictionary> LoadTlkAsync(CancellationToken cancellationToken)

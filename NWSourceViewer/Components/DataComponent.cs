@@ -44,4 +44,9 @@ public class DataComponent : ComponentBase
     {
         NavManager.NavigateTo($"races/{Id}");
     }
+
+    protected void GoToSpell(uint Id)
+    {
+        NavManager.NavigateTo($"spells/{Id}");
+    }
 }

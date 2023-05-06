@@ -152,6 +152,23 @@ public static class Helpers
     }
 
     /// <summary>
+    /// Attempts to convert the value of each <see cref="keys"/> in <see cref="data"/> to a uint. If it cannot be converted, it will not be in the return list.
+    /// </summary>
+    public static List<uint> GetUints(this Dictionary<string, string> data, params string[] keys)
+    {
+        List<uint> result = new List<uint>();
+        foreach (var key in keys)
+        {
+            var value = data.GetNUint(key);
+            if (value != null)
+            {
+                result.Add(value.Value);
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
     /// Gets the maximum number of levels allowed pre-epic and maximum levels total for a class, using defaults in place of bad values.
     /// </summary>
     public static (uint maxPreEpicLevel, uint maxLevel) GetMaxLevels(this ClassModel classModel, uint defaultMaxPreEpic, uint defaultMax)

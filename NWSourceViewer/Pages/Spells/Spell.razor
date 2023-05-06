@@ -1,0 +1,63 @@
+﻿@page "/spells/{Id:int}"
+@inherits DataComponent
+
+@if (IsLoaded)
+{
+    <PageTitle>The @model!.NameString Spell</PageTitle>
+
+    <h1>The @model!.NameString Spell</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                School:
+            </div>
+            <div class="col">
+                @model.School
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Components:
+            </div>
+            <div class="col">
+                @if (model.HasVerbalComponents)
+                {
+                    <text>Verbal</text>
+                    @if (model.HasSomaticComponents)
+                    {
+                        <text>, Somatic</text>
+                    }
+                }
+                else if (model.HasSomaticComponents)
+                {
+                    <text>Somatic</text>
+                }
+                else
+                {
+                    <text>None</text>
+                }
+            </div>
+        </div>
+    </div>
+
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![(uint)model!.SpellDesc!]</textarea>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private SpellModel? model = null;
+
+    protected override bool IsLoaded { get { return base.IsLoaded && model?.HasData == true; } }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
+        var featTask = FileLoader.Load2daRowAsync<SpellModel>(Constants.SpellsFileName, (uint)Id, cts.Token);
+        await Task.WhenAll(tlkTask, featTask);
+        Tlk = await tlkTask;
+        model = await featTask;
+    }
+}

@@ -10,6 +10,7 @@
             Index = data["Index"].ToUint();
             if (data["Level"] != Constants.NullString)
             {
+                HasData = true;
                 SpellLevel0 = data.GetNUint("SpellLevel0");
                 SpellLevel1 = data.GetNUint("SpellLevel1");
                 SpellLevel2 = data.GetNUint("SpellLevel2");

@@ -124,7 +124,7 @@ public class ClassService : IClassService
                     BonusFeatCount = bonusFeatTable[i].Bonus,
                     AutomaticFeats = classFeats
                                     .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
-                                    .Select(cf => featsTable[(int)cf.FeatIndex])
+                                    .Select(cf => featsTable.First(f => f.Index == cf.FeatIndex))
                                     .ToList(),
                     SpellsKnown = spellsKnownTable?.FirstOrDefault(s => s.Index == i)
                 };

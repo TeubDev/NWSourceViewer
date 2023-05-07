@@ -25,6 +25,7 @@
                 FeatID = data["FeatID"].ToNUint();
                 SubradialSpells = data.GetUints("SubRadSpell1", "SubRadSpell2", "SubRadSpell3", "SubRadSpell4", "SubRadSpell5", "SubRadSpell6", "SubRadSpell7", "SubRadSpell8");
                 Counters = data.GetUints("Counter1", "Counter2");
+                ColumnData = data;
             }
         }
 
@@ -109,12 +110,12 @@
         /// <param name="classColumnName">Refers to the value in the "SpellTableColumn" column in classes.2da</param>
         public uint? GetLevelForClass(string classColumnName)
         {
-            return columnData.GetNUint(classColumnName);
+            return ColumnData.GetNUint(classColumnName);
         }
 
         /// <summary>
         /// Since column titles can vary based on custom content, we can't strongly-type what each will be and need to store all the extra data here.
         /// </summary>
-        private Dictionary<string, string> columnData = new Dictionary<string, string>();
+        private Dictionary<string, string> ColumnData = new Dictionary<string, string>();
     }
 }

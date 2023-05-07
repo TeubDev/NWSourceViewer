@@ -4,6 +4,7 @@ using NWSourceViewer.Models.Classes;
 using NWSourceViewer.Models.Classes.Prerequisites;
 using NWSourceViewer.Models.Feats;
 using NWSourceViewer.Models.Races;
+using NWSourceViewer.Models.Spells;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NWSourceViewer.Services;
@@ -45,7 +46,8 @@ public class ClassService : IClassService
             await Task.WhenAll(
                 SetClassPrerequisitesAsync(fullClassModel, featsTable, cancellationToken),
                 SetClassLevelsAsync(fullClassModel, featsTable, cancellationToken),
-                SetSkillsAsync(fullClassModel, cancellationToken)
+                SetSkillsAsync(fullClassModel, cancellationToken),
+                SetSpellListAsync(fullClassModel, cancellationToken)
                 );
         }
 
@@ -205,6 +207,43 @@ public class ClassService : IClassService
                                 (int)prerequisite.NumericReqParam2);
                             break;
                     }
+                }
+            }
+        }
+    }
+
+    private async Task SetSpellListAsync(FullClassModel fullClass, CancellationToken cancellationToken)
+    {
+        
+        if (fullClass.ClassModel.SpellTableColumn != Constants.NullString)
+        {
+            var spellsTable = await fileLoader.Load2daAsync<SpellModel>(Constants.SpellsFileName, cancellationToken);
+            if (spellsTable != null)
+            {
+                //var groupByLevelQuery =
+                //    from spell in spellsTable
+                //    group spell by spell.GetLevelForClass(fullClass.ClassModel.SpellTableColumn) into newGroup
+                //    where newGroup.Key != null
+                //    orderby newGroup.Key
+                //    select newGroup;
+                var allClassSpells = spellsTable
+                    .Where(spell => spell.HasData)
+                    .GroupBy(spell => spell.GetLevelForClass(fullClass.ClassModel.SpellTableColumn))
+                    .Where(spellLevelGroup => spellLevelGroup.Key != null)
+                    .OrderBy(spellLevelGroup => spellLevelGroup.Key);
+                try
+                {
+                    foreach (var spellLevelList in allClassSpells)
+                    {
+                        fullClass.SpellLists[spellLevelList.Key!.Value] = spellLevelList
+                            .OrderBy(s => s.NameString)
+                            .ToList();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
                 }
             }
         }

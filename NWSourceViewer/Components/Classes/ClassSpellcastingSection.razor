@@ -118,6 +118,23 @@
         </Columns>
     </RadzenDataGrid>
 }
+@if (Class.SpellLists.Count > 0)
+{
+    <h3>Spells available</h3>
+    <div class="container">
+        @foreach (var spellLevelList in Class.SpellLists)
+        {
+           <div class="row">
+               <div class="col">
+                   Level @spellLevelList.Key
+                </div>
+                <div class="col">
+                    <CommaLinkList LinkList="@spellLevelList.Value.Select(f => new KeyValuePair<string, string>(f.NameString, $"/spells/{f.Index}")).ToList()" />
+                </div>
+           </div>
+        }
+    </div>
+}
 
 @code {
     [Parameter, EditorRequired]

@@ -220,31 +220,17 @@ public class ClassService : IClassService
             var spellsTable = await fileLoader.Load2daAsync<SpellModel>(Constants.SpellsFileName, cancellationToken);
             if (spellsTable != null)
             {
-                //var groupByLevelQuery =
-                //    from spell in spellsTable
-                //    group spell by spell.GetLevelForClass(fullClass.ClassModel.SpellTableColumn) into newGroup
-                //    where newGroup.Key != null
-                //    orderby newGroup.Key
-                //    select newGroup;
                 var allClassSpells = spellsTable
                     .Where(spell => spell.HasData)
                     .GroupBy(spell => spell.GetLevelForClass(fullClass.ClassModel.SpellTableColumn))
                     .Where(spellLevelGroup => spellLevelGroup.Key != null)
                     .OrderBy(spellLevelGroup => spellLevelGroup.Key);
-                try
-                {
                     foreach (var spellLevelList in allClassSpells)
                     {
                         fullClass.SpellLists[spellLevelList.Key!.Value] = spellLevelList
                             .OrderBy(s => s.NameString)
                             .ToList();
                     }
-                }
-                catch (Exception ex)
-                {
-
-                    throw;
-                }
             }
         }
     }

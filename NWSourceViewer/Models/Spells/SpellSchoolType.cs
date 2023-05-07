@@ -1,14 +1,13 @@
-﻿namespace NWSourceViewer.Models.Spells
+﻿namespace NWSourceViewer.Models.Spells;
+
+public enum SpellSchool
 {
-    public enum SpellSchool
-    {
-        Abjuration = 'A',
-        Conjuration = 'C',
-        Divination = 'D',
-        Enchantment = 'E',
-        Illusion = 'I',
-        Necromancy = 'N',
-        Transmutation = 'T',
-        Evocation = 'V'
-    }
+    Abjuration = 'A',
+    Conjuration = 'C',
+    Divination = 'D',
+    Enchantment = 'E',
+    Illusion = 'I',
+    Necromancy = 'N',
+    Transmutation = 'T',
+    Evocation = 'V'
 }

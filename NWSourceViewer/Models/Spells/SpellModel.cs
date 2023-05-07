@@ -1,4 +1,6 @@
-﻿namespace NWSourceViewer.Models.Spells;
+﻿using System.Globalization;
+
+namespace NWSourceViewer.Models.Spells;
 
 public class SpellModel : Base2daRowModel
 {
@@ -6,7 +8,8 @@ public class SpellModel : Base2daRowModel
     {
         Index = data["Index"].ToUint();
         var nameDataValue = data["Name"];
-        if (nameDataValue != Constants.NullString)
+        var metamagicDataValue = data["MetaMagic"];
+        if (nameDataValue != Constants.NullString && metamagicDataValue != Constants.NullString)
         {
             HasData = true;
             Name = nameDataValue.ToUint();
@@ -15,8 +18,8 @@ public class SpellModel : Base2daRowModel
             Range = (SpellRangeType)data["Range"][0];
             HasVerbalComponents = data["VS"].Contains('V', StringComparison.InvariantCultureIgnoreCase);
             HasSomaticComponents = data["VS"].Contains('S', StringComparison.InvariantCultureIgnoreCase);
-            Metamagic = (Metamagic)data["MetaMagic"].ToInt();
-            TargetType = (TargetType)data["TargetType"].ToInt();
+            Metamagic = (Metamagic)metamagicDataValue.To<int>();
+            TargetType = (TargetType)data["TargetType"].To<int>();
             InnateLevel = data["Innate"].ToNUint();
             Master = data["Master"].ToNUint();
             SpellDesc = data["SpellDesc"].ToUint();

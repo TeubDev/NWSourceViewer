@@ -16,7 +16,7 @@ public enum SpellRangeType
     /// <summary>
     /// 8M
     /// </summary>
-    Small = 'S',
+    Short = 'S',
     /// <summary>
     /// 20M
     /// </summary>

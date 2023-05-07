@@ -9,6 +9,14 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                Levels:
+            </div>
+            <div class="col">
+                Innate @model.InnateLevel
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
                 School:
             </div>
             <div class="col">
@@ -38,6 +46,38 @@
                 }
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                Metamagic:
+            </div>
+            <div class="col">
+                @model.Metamagic
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Target types:
+            </div>
+            <div class="col">
+                @model.TargetType
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Range:
+            </div>
+            <div class="col">
+                @model.Range
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Hostile:
+            </div>
+            <div class="col">
+                @GetYesNo(model.IsHostile)
+            </div>
+        </div>
     </div>
 
     <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%; height: 10em" readonly>@Tlk![(uint)model!.SpellDesc!]</textarea>
@@ -55,9 +95,9 @@
     {
         CancellationTokenSource cts = new CancellationTokenSource();
         var tlkTask = FileLoader.LoadTlkAsync(cts.Token);
-        var featTask = FileLoader.Load2daRowAsync<SpellModel>(Constants.SpellsFileName, (uint)Id, cts.Token);
-        await Task.WhenAll(tlkTask, featTask);
+        var modelTask = FileLoader.Load2daRowAsync<SpellModel>(Constants.SpellsFileName, (uint)Id, cts.Token);
+        await Task.WhenAll(tlkTask, modelTask);
         Tlk = await tlkTask;
-        model = await featTask;
+        model = await modelTask;
     }
 }

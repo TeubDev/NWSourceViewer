@@ -1,5 +1,6 @@
 ﻿using NWSourceViewer.Models;
 using NWSourceViewer.Models.Classes;
+using System.ComponentModel;
 
 namespace NWSourceViewer;
 
@@ -245,5 +246,23 @@ public static class Helpers
             }
         }
         return values;
+    }
+
+    /// <summary>
+    /// Converts the input to the specified type if possible.
+    /// </summary>
+    public static T To<T>(this string input) where T : notnull
+    {
+        if (input == Constants.NullString)
+        {
+            return default;
+        }
+        var converter = TypeDescriptor.GetConverter(typeof(T));
+        var tResult = (T?)converter.ConvertFromString(input);
+        if (tResult == null)
+        {
+            return default;
+        }
+        return tResult;
     }
 }

@@ -23,12 +23,14 @@ public class SpellModel : Base2daRowModel
             InnateLevel = data["Innate"].ToNUint();
             Master = data["Master"].ToNUint();
             SpellDesc = data["SpellDesc"].ToUint();
+            DescriptionString = tlk[SpellDesc];
             SpontaneouslyCast = data["SpontaneouslyCast"].ToBool();
             IsHostile = data["HostileSetting"].ToBool();
             FeatID = data["FeatID"].ToNUint();
             SubradialSpells = data.GetUints("SubRadSpell1", "SubRadSpell2", "SubRadSpell3", "SubRadSpell4", "SubRadSpell5", "SubRadSpell6", "SubRadSpell7", "SubRadSpell8");
             Counters = data.GetUints("Counter1", "Counter2");
             ColumnData = data;
+            UseableForPlayers = true;
         }
     }
 

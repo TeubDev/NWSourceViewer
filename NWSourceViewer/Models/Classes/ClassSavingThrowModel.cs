@@ -15,6 +15,7 @@ public class ClassSavingThrowModel : Base2daRowModel
             FortSave = fortDataValue.ToUint();
             RefSave = data["RefSave"].ToUint();
             WillSave = data["WillSave"].ToUint();
+            UseableForPlayers = true;
         }
     }
     public uint FortSave { get; set; }

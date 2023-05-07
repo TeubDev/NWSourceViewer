@@ -255,13 +255,13 @@ public static class Helpers
     {
         if (input == Constants.NullString)
         {
-            return default;
+            return default!;
         }
         var converter = TypeDescriptor.GetConverter(typeof(T));
         var tResult = (T?)converter.ConvertFromString(input);
         if (tResult == null)
         {
-            return default;
+            return default!;
         }
         return tResult;
     }

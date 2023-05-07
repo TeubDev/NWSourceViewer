@@ -14,6 +14,11 @@ public abstract class Base2daRowModel
     public bool HasData { get; set; } = false;
 
     /// <summary>
+    /// True if this row can be used by players.
+    /// </summary>
+    public bool UseableForPlayers { get; set; } = false;
+
+    /// <summary>
     /// The row number in the 2da file.
     /// </summary>
     public uint Index { get; set; } = 0;
@@ -22,4 +27,9 @@ public abstract class Base2daRowModel
     /// The value of the name after being looked up from the TLK file.
     /// </summary>
     public string NameString { get; set; } = "";
+
+    /// <summary>
+    /// The value of the description after being looked up from the TLK file.
+    /// </summary>
+    public string DescriptionString { get; set; } = "";
 }

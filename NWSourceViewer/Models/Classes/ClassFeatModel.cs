@@ -16,6 +16,7 @@ public class ClassFeatModel : Base2daRowModel
             List = (ClassFeatType)data["List"].ToUint();
             GrantedOnLevel = data["GrantedOnLevel"].ToInt();
             OnMenu = data["OnMenu"].ToUint();
+            UseableForPlayers = true;
         }
     }
 

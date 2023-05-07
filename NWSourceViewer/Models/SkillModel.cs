@@ -12,9 +12,11 @@ public class SkillModel : Base2daRowModel
             Name = nameDataValue.ToUint();
             NameString = tlk[Name];
             Description = data["Description"].ToUint();
+            DescriptionString = tlk[Description];
             Untrained = data["Untrained"].ToBool();
             KeyAbility = data["KeyAbility"];
             ArmorCheckPenalty = data["ArmorCheckPenalty"].ToBool();
+            UseableForPlayers = true;
         }
     }
 

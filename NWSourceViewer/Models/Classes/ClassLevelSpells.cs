@@ -21,6 +21,7 @@ public class ClassLevelSpells : Base2daRowModel
             SpellLevel7 = data.GetNUint("SpellLevel7");
             SpellLevel8 = data.GetNUint("SpellLevel8");
             SpellLevel9 = data.GetNUint("SpellLevel9");
+            UseableForPlayers = true;
         }
     }
 

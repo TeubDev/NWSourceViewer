@@ -13,6 +13,7 @@ public class ClassModel : Base2daRowModel
             Name = nameDataValue.ToUint();
             NameString = tlk[Name];
             Description = data["Description"].ToUint();
+            DescriptionString = tlk[Description];
             HitDie = data["HitDie"].ToUint();
             AttackBonusTable = data["AttackBonusTable"];
             FeatsTable = data["FeatsTable"];
@@ -47,6 +48,7 @@ public class ClassModel : Base2daRowModel
             MinCastingLevel = data["MinCastingLevel"].ToUint();
             MinAssociateLevel = data["MinAssociateLevel"].ToUint();
             CanCastSpontaneously = data["CanCastSpontaneously"].ToBool();
+            UseableForPlayers = PlayerClass;
         }
     }
 

@@ -85,7 +85,8 @@ public class FileLoader : IFileLoader
                     }
                     var typedRow = new T();
                     typedRow.ConvertData(dataRow, tlk);
-                    if (typedRow.HasData || config.IncludeEmpty2daRows)
+                    if ((typedRow.HasData || config.IncludeEmpty2daRows)
+                        && (typedRow.UseableForPlayers || config.IncludeUnuseableForPlayers2daRows))
                     {
                         data.Add(typedRow);
                     }

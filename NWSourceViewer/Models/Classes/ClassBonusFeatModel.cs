@@ -13,6 +13,7 @@ public class ClassBonusFeatModel : Base2daRowModel
         {
             HasData = true;
             Bonus = bonusDataValue.ToUint();
+            UseableForPlayers = true;
         }
     }
 

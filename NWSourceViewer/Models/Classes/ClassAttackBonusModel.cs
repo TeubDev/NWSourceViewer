@@ -13,6 +13,7 @@ public class ClassAttackBonusModel : Base2daRowModel
         {
             HasData = true;
             Bab = babDataValue.ToUint();
+            UseableForPlayers = true;
         }
     }
 

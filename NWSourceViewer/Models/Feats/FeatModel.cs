@@ -10,7 +10,8 @@ public class FeatModel : Base2daRowModel
         {
             HasData = true;
             NameString = tlk[(uint)Feat];
-            Description = data["DESCRIPTION"].ToNUint();
+            Description = data["DESCRIPTION"].ToUint();
+            DescriptionString = tlk[Description];
             MinAttackBonus = data["MINATTACKBONUS"].ToNUint();
             MinStr = data["MINSTR"].ToNUint();
             MinDex = data["MINDEX"].ToNUint();
@@ -42,6 +43,7 @@ public class FeatModel : Base2daRowModel
             MinFortSave = data["MinFortSave"].ToNUint();
             PreReqEpic = data["PreReqEpic"].ToBool();
             ReqAction = data["ReqAction"].ToBool();
+            UseableForPlayers = true;
         }
     }
 
@@ -52,7 +54,7 @@ public class FeatModel : Base2daRowModel
     /// <summary>
     /// A StringRef indicating the description of the feat.
     /// </summary>
-    public uint? Description { get; set; } = null;
+    public uint Description { get; set; }
     /// <summary>
     /// The minimum attack bonus a character must have to select this feat.
     /// </summary>

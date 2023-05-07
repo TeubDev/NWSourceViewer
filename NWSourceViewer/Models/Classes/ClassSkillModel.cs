@@ -10,6 +10,7 @@ public class ClassSkillModel : Base2daRowModel
             HasData = true;
             SkillIndex = data["SkillIndex"].ToUint();
             ClassSkill = data["ClassSkill"].ToBool();
+            UseableForPlayers = true;
         }
     }
 

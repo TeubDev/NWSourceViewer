@@ -12,6 +12,7 @@ public class RaceModel : Base2daRowModel
             Name = nameDataValue.ToUint();
             NameString = tlk[Name];
             Description = data["Description"].ToUint();
+            DescriptionString = tlk[Description];
             StrengthAdjustment = data["StrAdjust"].ToInt();
             DexterityAdjustment = data["DexAdjust"].ToInt();
             IntelligenceAdjustment = data["IntAdjust"].ToInt();
@@ -23,6 +24,7 @@ public class RaceModel : Base2daRowModel
             PlayerRace = data["PlayerRace"].ToBool();
             ExtraFeatsAtFirstLevel = data["ExtraFeatsAtFirstLevel"].ToUint();
             ExtraSkillPointsPerLevel = data["ExtraSkillPointsPerLevel"].ToUint();
+            UseableForPlayers = PlayerRace;
         }
     }
 

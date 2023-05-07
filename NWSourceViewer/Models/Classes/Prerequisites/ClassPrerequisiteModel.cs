@@ -19,6 +19,7 @@ public class ClassPrerequisiteModel : Base2daRowModel
                 NumericReqParam1 = data["ReqParam1"].ToUint();
             }
             NumericReqParam2 = data["ReqParam2"].ToUint();
+            UseableForPlayers = true;
         }
     }
 

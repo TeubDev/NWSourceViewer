@@ -237,54 +237,9 @@ public class ClassService : IClassService
 
     private void SetAlignmentsAllowed(FullClassModel fullClass)
     {
-        var alignsDisallowed = fullClass.ClassModel.AlignRestrict;
-        var neutralsDisallowed = fullClass.ClassModel.AlignRstrctType;
-
-        fullClass.AlignmentsAllowed.LawfulGood = !(
-            alignsDisallowed.HasFlag(AlignmentRestrictions.Lawful)
-                || alignsDisallowed.HasFlag(AlignmentRestrictions.Good));
-        fullClass.AlignmentsAllowed.NeutralGood = !(
-            (alignsDisallowed.HasFlag(AlignmentRestrictions.Neutral)
-                && neutralsDisallowed.HasFlag(AlignmentRestrictionTypes.GoodEvil))
-            || alignsDisallowed.HasFlag(AlignmentRestrictions.Good));
-        fullClass.AlignmentsAllowed.ChaoticGood = !(
-            alignsDisallowed.HasFlag(AlignmentRestrictions.Chaotic)
-                || alignsDisallowed.HasFlag(AlignmentRestrictions.Good));
-
-        fullClass.AlignmentsAllowed.LawfulNeutral = !(
-            (alignsDisallowed.HasFlag(AlignmentRestrictions.Neutral)
-                && neutralsDisallowed.HasFlag(AlignmentRestrictionTypes.LawfulChaotic))
-            || alignsDisallowed.HasFlag(AlignmentRestrictions.Lawful));
-        fullClass.AlignmentsAllowed.TrueNeutral = !alignsDisallowed.HasFlag(AlignmentRestrictions.Neutral);
-        fullClass.AlignmentsAllowed.ChaoticNeutral = !(
-            (alignsDisallowed.HasFlag(AlignmentRestrictions.Neutral)
-                && neutralsDisallowed.HasFlag(AlignmentRestrictionTypes.LawfulChaotic))
-            || alignsDisallowed.HasFlag(AlignmentRestrictions.Chaotic));
-
-        fullClass.AlignmentsAllowed.LawfulEvil = !(
-            alignsDisallowed.HasFlag(AlignmentRestrictions.Lawful)
-                || alignsDisallowed.HasFlag(AlignmentRestrictions.Evil));
-        fullClass.AlignmentsAllowed.NeutralEvil = !(
-            (alignsDisallowed.HasFlag(AlignmentRestrictions.Neutral)
-                && neutralsDisallowed.HasFlag(AlignmentRestrictionTypes.GoodEvil))
-            || alignsDisallowed.HasFlag(AlignmentRestrictions.Evil));
-        fullClass.AlignmentsAllowed.ChaoticEvil = !(
-            alignsDisallowed.HasFlag(AlignmentRestrictions.Chaotic)
-                || alignsDisallowed.HasFlag(AlignmentRestrictions.Evil));
-
-        if (fullClass.ClassModel.InvertRestrict)
-        {
-            fullClass.AlignmentsAllowed.LawfulGood = !fullClass.AlignmentsAllowed.LawfulGood;
-            fullClass.AlignmentsAllowed.NeutralGood = !fullClass.AlignmentsAllowed.NeutralGood;
-            fullClass.AlignmentsAllowed.ChaoticGood = !fullClass.AlignmentsAllowed.ChaoticGood;
-
-            fullClass.AlignmentsAllowed.LawfulNeutral = !fullClass.AlignmentsAllowed.LawfulNeutral;
-            fullClass.AlignmentsAllowed.TrueNeutral = !fullClass.AlignmentsAllowed.TrueNeutral;
-            fullClass.AlignmentsAllowed.ChaoticNeutral = !fullClass.AlignmentsAllowed.ChaoticNeutral;
-
-            fullClass.AlignmentsAllowed.LawfulEvil = !fullClass.AlignmentsAllowed.LawfulEvil;
-            fullClass.AlignmentsAllowed.NeutralEvil = !fullClass.AlignmentsAllowed.NeutralEvil;
-            fullClass.AlignmentsAllowed.ChaoticEvil = !fullClass.AlignmentsAllowed.ChaoticEvil;
-        }
+        fullClass.AlignmentsAllowed = Helpers.GetAlignmentsAllowed(
+            fullClass.ClassModel.AlignRestrict,
+            fullClass.ClassModel.AlignRstrctType,
+            fullClass.ClassModel.InvertRestrict);
     }
 }

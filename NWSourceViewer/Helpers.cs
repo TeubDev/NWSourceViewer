@@ -1,5 +1,6 @@
 ﻿using NWSourceViewer.Models;
 using NWSourceViewer.Models.Classes;
+using NWSourceViewer.Models.Classes.AlignmentRestrictions;
 using System.ComponentModel;
 
 namespace NWSourceViewer;
@@ -264,5 +265,61 @@ public static class Helpers
             return default!;
         }
         return tResult;
+    }
+
+    /// <summary>
+    /// Sets which alignments are allowed based on the restrictions.
+    /// </summary>
+    public static AlignmentsAllowed GetAlignmentsAllowed(AlignmentRestrictions restrictions, AlignmentRestrictionTypes neutralRestrictionTypes, bool invertRestrictions)
+    {
+        var result = new AlignmentsAllowed();
+
+        result.LawfulGood = !(
+            restrictions.HasFlag(AlignmentRestrictions.Lawful)
+                || restrictions.HasFlag(AlignmentRestrictions.Good));
+        result.NeutralGood = !(
+            (restrictions.HasFlag(AlignmentRestrictions.Neutral)
+                && neutralRestrictionTypes.HasFlag(AlignmentRestrictionTypes.GoodEvil))
+            || restrictions.HasFlag(AlignmentRestrictions.Good));
+        result.ChaoticGood = !(
+            restrictions.HasFlag(AlignmentRestrictions.Chaotic)
+                || restrictions.HasFlag(AlignmentRestrictions.Good));
+
+        result.LawfulNeutral = !(
+            (restrictions.HasFlag(AlignmentRestrictions.Neutral)
+                && neutralRestrictionTypes.HasFlag(AlignmentRestrictionTypes.LawfulChaotic))
+            || restrictions.HasFlag(AlignmentRestrictions.Lawful));
+        result.TrueNeutral = !restrictions.HasFlag(AlignmentRestrictions.Neutral);
+        result.ChaoticNeutral = !(
+            (restrictions.HasFlag(AlignmentRestrictions.Neutral)
+                && neutralRestrictionTypes.HasFlag(AlignmentRestrictionTypes.LawfulChaotic))
+            || restrictions.HasFlag(AlignmentRestrictions.Chaotic));
+
+        result.LawfulEvil = !(
+            restrictions.HasFlag(AlignmentRestrictions.Lawful)
+                || restrictions.HasFlag(AlignmentRestrictions.Evil));
+        result.NeutralEvil = !(
+            (restrictions.HasFlag(AlignmentRestrictions.Neutral)
+                && neutralRestrictionTypes.HasFlag(AlignmentRestrictionTypes.GoodEvil))
+            || restrictions.HasFlag(AlignmentRestrictions.Evil));
+        result.ChaoticEvil = !(
+            restrictions.HasFlag(AlignmentRestrictions.Chaotic)
+                || restrictions.HasFlag(AlignmentRestrictions.Evil));
+
+        if (invertRestrictions)
+        {
+            result.LawfulGood = !result.LawfulGood;
+            result.NeutralGood = !result.NeutralGood;
+            result.ChaoticGood = !result.ChaoticGood;
+
+            result.LawfulNeutral = !result.LawfulNeutral;
+            result.TrueNeutral = !result.TrueNeutral;
+            result.ChaoticNeutral = !result.ChaoticNeutral;
+
+            result.LawfulEvil = !result.LawfulEvil;
+            result.NeutralEvil = !result.NeutralEvil;
+            result.ChaoticEvil = !result.ChaoticEvil;
+        }
+        return result;
     }
 }

@@ -1,4 +1,5 @@
-﻿using NWSourceViewer.Models.Classes.Prerequisites;
+﻿using NWSourceViewer.Models.Classes.AlignmentRestrictions;
+using NWSourceViewer.Models.Classes.Prerequisites;
 using NWSourceViewer.Models.Feats;
 using NWSourceViewer.Models.Spells;
 
@@ -21,6 +22,7 @@ public class FullClassModel
     public List<SkillModel> ClassSkills { get; set; } = new List<SkillModel>();
     public List<SkillModel> CrossClassSkills { get; set; } = new List<SkillModel>();
     public List<SkillModel> UnavailableSkills { get; set; } = new List<SkillModel>();
+    public AlignmentsAllowed AlignmentsAllowed { get; set; } = new AlignmentsAllowed();
 
     /// <summary>
     /// Key is the spell level. Value is the list of spells at that level.

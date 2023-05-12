@@ -1,4 +1,6 @@
-﻿namespace NWSourceViewer.Models.Classes;
+﻿using NWSourceViewer.Models.Classes.AlignmentRestrictions;
+
+namespace NWSourceViewer.Models.Classes;
 
 public class ClassModel : Base2daRowModel
 {
@@ -25,9 +27,9 @@ public class ClassModel : Base2daRowModel
             SpellKnownTable = data["SpellKnownTable"];
             PlayerClass = data["PlayerClass"].ToBool();
             SpellCaster = data["SpellCaster"].ToBool();
-            AlignRestrict = data["AlignRestrict"];
-            AlignRstrctType = data["AlignRstrctType"];
-            InvertRestrict = data["InvertRestrict"];
+            AlignRestrict = (AlignmentRestrictions.AlignmentRestrictions)data["AlignRestrict"].To<byte>();
+            AlignRstrctType = (AlignmentRestrictionTypes)data["AlignRstrctType"].To<byte>();
+            InvertRestrict = data["InvertRestrict"].ToBool();
             PreReqTable = data["PreReqTable"];
             MaxLevel = data["MaxLevel"].ToUint();
             XPPenalty = data["XPPenalty"].ToBool();
@@ -108,15 +110,15 @@ public class ClassModel : Base2daRowModel
     /// <summary>
     /// Specifies the alignments that are not allowed to obtain levels in this class.
     /// </summary>
-    public string AlignRestrict { get; set; } = "";
+    public AlignmentRestrictions.AlignmentRestrictions AlignRestrict { get; set; }
     /// <summary>
     /// Specifies if the alignment restriction specified in the AlignRestrict column applies to the law-chaos axis (0x1), the good-evil axis (0x2), both (0x3), or neither (0x0).
     /// </summary>
-    public string AlignRstrctType { get; set; } = "";
+    public AlignmentRestrictionTypes AlignRstrctType { get; set; }
     /// <summary>
     /// If set to 1 (the default is 0), the alignments specified in the AlignRestrict and AlignRestrictType columns are the only alignments allowed to gain levels in this class, rather than being the alignments prohibited from gaining them.
     /// </summary>
-    public string InvertRestrict { get; set; } = "";
+    public bool InvertRestrict { get; set; }
     /// <summary>
     /// The name of the .2da file (without the extension) defining the prerequisites for this class (making this class a prestige class).
     /// </summary>

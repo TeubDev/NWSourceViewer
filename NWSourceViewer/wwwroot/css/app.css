@@ -66,3 +66,7 @@ a, .btn-link {
 .unfixed-table-holder table {
     table-layout: inherit;
 }
+
+.allowed-alignment {
+    background-color: aquamarine;
+}

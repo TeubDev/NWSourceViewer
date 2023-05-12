@@ -1,0 +1,42 @@
+﻿<h2>Allowed Alignments</h2>
+
+<table>
+    <tr>
+        <td class='@(Class.AlignmentsAllowed.LawfulGood ? "allowed-alignment" : "")'>
+            LG
+        </td>
+        <td class='@(Class.AlignmentsAllowed.NeutralGood ? "allowed-alignment" : "")'>
+            NG
+        </td>
+        <td class='@(Class.AlignmentsAllowed.ChaoticGood ? "allowed-alignment" : "")'>
+            CG
+        </td>
+    </tr>
+    <tr>
+        <td class='@(Class.AlignmentsAllowed.LawfulNeutral ? "allowed-alignment" : "")'>
+            LN
+        </td>
+        <td class='@(Class.AlignmentsAllowed.TrueNeutral ? "allowed-alignment" : "")'>
+            TN
+        </td>
+        <td class='@(Class.AlignmentsAllowed.ChaoticNeutral ? "allowed-alignment" : "")'>
+            CN
+        </td>
+    </tr>
+    <tr>
+        <td class='@(Class.AlignmentsAllowed.LawfulEvil ? "allowed-alignment" : "")'>
+            LE
+        </td>
+        <td class='@(Class.AlignmentsAllowed.NeutralEvil ? "allowed-alignment" : "")'>
+            NE
+        </td>
+        <td class='@(Class.AlignmentsAllowed.ChaoticEvil ? "allowed-alignment" : "")'>
+            CE
+        </td>
+    </tr>
+</table>
+
+@code {
+    [Parameter, EditorRequired]
+    public FullClassModel Class { get; set; } = default!;
+}

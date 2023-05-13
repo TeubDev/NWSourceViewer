@@ -22,6 +22,6 @@ builder.Services.AddSingleton(config);
 var memoryCache = new MemoryCache(new MemoryCacheOptions());
 var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
 AsyncCachePolicy cachePolicy = Policy.CacheAsync(memoryCacheProvider, TimeSpan.FromDays(1));
-builder.Services.AddScoped<IAsyncPolicy>(s => cachePolicy); // TODO: Create service wrapping Blazored.LocalStorage and Polly
+builder.Services.AddScoped<IAsyncPolicy>(s => cachePolicy);
 
 await builder.Build().RunAsync();

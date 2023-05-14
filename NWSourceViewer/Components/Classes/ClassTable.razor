@@ -1,78 +1,76 @@
-﻿@inject Config Configuration
-@inject IFileLoader FileLoader
-
-@if (tlk != null)
+﻿@if (Epic)
 {
-    <RadzenDataGrid Data="ClassLevels" class="unfixed-table-holder">
-        <Columns>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Property="Level" Title="Level" />
-            <RadzenDataGridColumn TItem="ClassLevelModel" Property="BaseAttackBonus" Title="BAB">
-                <Template Context="data">
-                    +@data.BaseAttackBonus
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Title="HP Range">
-                <Template Context="data">
-                    @data.HitPointMinimum - @data.HitPointMaximum
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Property="FortitudeSave" Title="Fort">
-                <Template Context="data">
-                    +@data.FortitudeSave
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Property="ReflexSave" Title="Ref">
-                <Template Context="data">
-                    +@data.ReflexSave
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Property="WillSave" Title="Will">
-                <Template Context="data">
-                    +@data.WillSave
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ClassLevelModel" Title="Feats">
-                <Template Context="data">
-                    @if (data.BonusFeatCount == 1)
+    <h2>Epic levels</h2>
+}
+else
+{
+    <h2>Levels</h2>
+}
+
+<RadzenDataGrid Data="ClassLevels" class="unfixed-table-holder">
+    <Columns>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Property="Level" Title="Level" />
+        <RadzenDataGridColumn TItem="ClassLevelModel" Property="BaseAttackBonus" Title="BAB">
+            <Template Context="data">
+                +@data.BaseAttackBonus
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Title="HP Range">
+            <Template Context="data">
+                @data.HitPointMinimum - @data.HitPointMaximum
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Property="FortitudeSave" Title="Fort">
+            <Template Context="data">
+                +@data.FortitudeSave
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Property="ReflexSave" Title="Ref">
+            <Template Context="data">
+                +@data.ReflexSave
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Property="WillSave" Title="Will">
+            <Template Context="data">
+                +@data.WillSave
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ClassLevelModel" Title="Feats">
+            <Template Context="data">
+                @if (data.BonusFeatCount == 1)
+                {
+                    <text>bonus feat</text>
+                }
+                else if (data.BonusFeatCount > 1)
+                {
+                    @data.BonusFeatCount <text> bonus feats</text>
+                }
+                @if (data.AutomaticFeats.Count > 0)
+                {
+                    @if (data.BonusFeatCount > 0)
                     {
-                        <text>bonus feat</text>
+                        <text>, </text>
                     }
-                    else if (data.BonusFeatCount > 1)
+                    @for (int i = 0; i < data.AutomaticFeats.Count; i++)
                     {
-                        @data.BonusFeatCount <text> bonus feats</text>
-                    }
-                    @if (data.AutomaticFeats.Count > 0)
-                    {
-                        @if (data.BonusFeatCount > 0)
+                        <a href="/feats/@data.AutomaticFeats[i].Index">
+                            @data.AutomaticFeats[i].NameString
+                        </a>
+                        @if (i < data.AutomaticFeats.Count - 1)
                         {
                             <text>, </text>
                         }
-                        @for (int i = 0; i < data.AutomaticFeats.Count; i++)
-                        {
-                            <a href="/feats/@data.AutomaticFeats[i].Index">
-                                @data.AutomaticFeats[i].NameString
-                            </a>
-                            @if (i < data.AutomaticFeats.Count - 1)
-                            {
-                                <text>, </text>
-                            }
-                        }
                     }
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-}
+                }
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public List<ClassLevelModel> ClassLevels { get; set; } = default!;
 
-    private TlkDictionary? tlk = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var cts = new CancellationTokenSource();
-        tlk = await FileLoader.LoadTlkAsync(cts.Token);
-    }
+    [Parameter]
+    public bool Epic { get; set; }
 }

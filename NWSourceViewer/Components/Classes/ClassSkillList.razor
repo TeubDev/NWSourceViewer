@@ -1,26 +1,34 @@
-﻿<div>
-    Class skills:
-    @if (Class.ClassSkills.Count == 0)
-    {
-        <text>none</text>
-    }
-    <CommaLinkList LinkList="@Class.ClassSkills.Select(cs => new KeyValuePair<string, string>(cs.NameString, $"/skills/{cs.Index}")).ToList()" />
+﻿<h2>Skills</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            Class skills:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@Class.ClassSkills.Select(cs => new KeyValuePair<string, string>(cs.NameString, $"/skills/{cs.Index}")).ToList()" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Cross-class skills:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@Class.CrossClassSkills.Select(ccs => new KeyValuePair<string, string>(ccs.NameString, $"/skills/{ccs.Index}")).ToList()" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Unavailable skills:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@Class.UnavailableSkills.Select(us => new KeyValuePair<string, string>(us.NameString, $"/skills/{us.Index}")).ToList()" />
+        </div>
+    </div>
 </div>
+
 <div>
-    Cross-class skills:
-    @if (Class.CrossClassSkills.Count == 0)
-    {
-        <text>none</text>
-    }
-    <CommaLinkList LinkList="@Class.CrossClassSkills.Select(ccs => new KeyValuePair<string, string>(ccs.NameString, $"/skills/{ccs.Index}")).ToList()" />
-</div>
-<div>
-    Unavailable skills:
-    @if (Class.UnavailableSkills.Count == 0)
-    {
-        <text>none</text>
-    }
-    <CommaLinkList LinkList="@Class.UnavailableSkills.Select(us => new KeyValuePair<string, string>(us.NameString, $"/skills/{us.Index}")).ToList()" />
+    <h2>Unavailable skills</h2>
 </div>
 
 @code {

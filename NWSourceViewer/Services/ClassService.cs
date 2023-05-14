@@ -41,14 +41,26 @@ public class ClassService : IClassService
         var featsTable = await featsTableTask;
         if (classModel != null && featsTable != null)
         {
-            fullClassModel = new FullClassModel(classModel);
-            await Task.WhenAll(
-                SetClassPrerequisitesAsync(fullClassModel, featsTable, cancellationToken),
-                SetClassLevelsAsync(fullClassModel, featsTable, cancellationToken),
-                SetSkillsAsync(fullClassModel, cancellationToken),
-                SetSpellListAsync(fullClassModel, cancellationToken)
-                );
-            SetAlignmentsAllowed(fullClassModel);
+            var classFeatTable = await fileLoader.Load2daAsync<ClassFeatModel>(classModel.FeatsTable, cancellationToken);
+            if (classFeatTable != null)
+            {
+                IEnumerable<FullClassFeatModel> classFeats = classFeatTable
+                .Where(cf => cf.HasData)
+                .Join(featsTable,
+                    cf => cf.FeatIndex,
+                    f => f.Index,
+                    (cf, f) => new FullClassFeatModel(cf, f));
+
+                fullClassModel = new FullClassModel(classModel);
+                await Task.WhenAll(
+                    SetClassPrerequisitesAsync(fullClassModel, featsTable, cancellationToken),
+                    SetClassLevelsAsync(fullClassModel, classFeats, cancellationToken),
+                    SetSkillsAsync(fullClassModel, cancellationToken),
+                    SetSpellListAsync(fullClassModel, cancellationToken)
+                    );
+                SetAlignmentsAllowed(fullClassModel);
+                SetGeneralAndBonusFeats(fullClassModel, classFeats);
+            }
         }
 
         return fullClassModel;
@@ -89,22 +101,20 @@ public class ClassService : IClassService
         }
     }
 
-    private async Task SetClassLevelsAsync(FullClassModel fullClass, List<FeatModel> featsTable, CancellationToken cancellationToken)
+    private async Task SetClassLevelsAsync(FullClassModel fullClass, IEnumerable<FullClassFeatModel> classFeats, CancellationToken cancellationToken)
     {
         var abTableTask = fileLoader.Load2daAsync<ClassAttackBonusModel>(fullClass.ClassModel.AttackBonusTable, cancellationToken);
         var savesTableTask = fileLoader.Load2daAsync<ClassSavingThrowModel>(fullClass.ClassModel.SavingThrowTable, cancellationToken);
-        var classFeatTableTask = fileLoader.Load2daAsync<ClassFeatModel>(fullClass.ClassModel.FeatsTable, cancellationToken);
         var bonusFeatTableTask = fileLoader.Load2daAsync<ClassBonusFeatModel>(fullClass.ClassModel.BonusFeatsTable, cancellationToken);
         var spellsKnownTableTask = fileLoader.Load2daAsync<ClassLevelSpells>(fullClass.ClassModel.SpellKnownTable, cancellationToken);
         var spellsGainedTableTask = fileLoader.Load2daAsync<ClassLevelSpells>(fullClass.ClassModel.SpellGainTable, cancellationToken);
-        await Task.WhenAll(abTableTask, savesTableTask, classFeatTableTask, bonusFeatTableTask, spellsKnownTableTask);
+        await Task.WhenAll(abTableTask, savesTableTask, bonusFeatTableTask, spellsKnownTableTask);
         var abTable = await abTableTask;
         var savesTable = await savesTableTask;
-        var classFeatTable = await classFeatTableTask;
         var bonusFeatTable = await bonusFeatTableTask;
         var spellsKnownTable = await spellsKnownTableTask;
         var spellsGainedTable = await spellsGainedTableTask;
-        if (abTable != null && savesTable != null && classFeatTable != null && bonusFeatTable != null)
+        if (abTable != null && savesTable != null && bonusFeatTable != null)
         {
             var (maxPreEpicLevel, maxLevel) = fullClass.ClassModel.GetMaxLevels(Constants.MaxPreEpicLevel, config.MaxLevel);
             uint hpMin = 0;
@@ -114,7 +124,6 @@ public class ClassService : IClassService
                 uint level = (uint)i + 1;
                 hpMin += fullClass.ClassModel.HitDie / 2;
                 hpMax += fullClass.ClassModel.HitDie;
-                var classFeats = classFeatTable.Where(classFeat => classFeat.HasData && classFeat.GrantedOnLevel == level);
 
                 var classLevel = new ClassLevelModel
                 {
@@ -127,8 +136,10 @@ public class ClassService : IClassService
                     WillSave = savesTable[i].WillSave,
                     BonusFeatCount = bonusFeatTable[i].Bonus,
                     AutomaticFeats = classFeats
-                                    .Where(cf => cf.List == ClassFeatType.AutomaticallyGrantedFeat)
-                                    .Select(cf => featsTable.First(f => f.Index == cf.FeatIndex))
+                                    .Where(cf => cf.ClassFeat.List == ClassFeatType.AutomaticallyGrantedFeat
+                                        && cf.ClassFeat.GrantedOnLevel == level)
+                                    .Select(cf => cf.Feat)
+                                    .OrderBy(f => f.NameString)
                                     .ToList(),
                     SpellsKnown = spellsKnownTable?.FirstOrDefault(s => s.Index == i),
                     SpellsGained = spellsGainedTable?.FirstOrDefault(s => s.Index == i),
@@ -233,6 +244,41 @@ public class ClassService : IClassService
                     }
             }
         }
+    }
+
+    private void SetGeneralAndBonusFeats(FullClassModel fullClass, IEnumerable<FullClassFeatModel> classFeats)
+    {
+        fullClass.GeneralFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.GeneralFeat
+                && cf.Feat.PreReqEpic == false)
+            .Select(cf => cf.Feat)
+            .ToList();
+        fullClass.GeneralOrBonusFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.GeneralOrBonusFeat
+                && cf.Feat.PreReqEpic == false)
+            .Select(cf => cf.Feat)
+            .ToList();
+        fullClass.BonusFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.BonusFeatOnly
+                && cf.Feat.PreReqEpic == false)
+            .Select(cf => cf.Feat)
+            .ToList();
+
+        fullClass.EpicGeneralFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.GeneralFeat
+                && cf.Feat.PreReqEpic == true)
+            .Select(cf => cf.Feat)
+            .ToList();
+        fullClass.EpicGeneralOrBonusFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.GeneralOrBonusFeat
+                && cf.Feat.PreReqEpic == true)
+            .Select(cf => cf.Feat)
+            .ToList();
+        fullClass.EpicBonusFeats = classFeats
+            .Where(cf => cf.ClassFeat.List == ClassFeatType.BonusFeatOnly
+                && cf.Feat.PreReqEpic == true)
+            .Select(cf => cf.Feat)
+            .ToList();
     }
 
     private void SetAlignmentsAllowed(FullClassModel fullClass)

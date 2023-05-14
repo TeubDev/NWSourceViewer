@@ -15,9 +15,6 @@ public class ClassLevelModel
     public uint ReflexSave { get; set; }
     public uint WillSave { get; set; }
     public uint BonusFeatCount { get; set; }
-    public List<FeatModel> GeneralFeats { get; set; } = new List<FeatModel>();
-    public List<FeatModel> GeneralOrBonusFeats { get; set; } = new List<FeatModel>();
-    public List<FeatModel> BonusFeats { get; set; } = new List<FeatModel>();
     public List<FeatModel> AutomaticFeats { get; set; } = new List<FeatModel>();
 
     /// <summary>

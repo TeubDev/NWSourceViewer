@@ -1,0 +1,49 @@
+﻿@if (Epic)
+{
+    <h2>Epic feats</h2>
+}
+else
+{
+    <h2>Feats</h2>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            General feats:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@GeneralFeats.Select(f => new KeyValuePair<string, string>(f.NameString, $"/feats/{f.Index}")).ToList()" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            General or bonus feats:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@GeneralOrBonusFeats.Select(f => new KeyValuePair<string, string>(f.NameString, $"/feats/{f.Index}")).ToList()" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Bonus only feats:
+        </div>
+        <div class="col">
+            <CommaLinkList LinkList="@BonusFeats.Select(f => new KeyValuePair<string, string>(f.NameString, $"/feats/{f.Index}")).ToList()" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<FeatModel> GeneralFeats { get; set; } = new List<FeatModel>();
+
+    [Parameter, EditorRequired]
+    public List<FeatModel> GeneralOrBonusFeats { get; set; } = new List<FeatModel>();
+
+    [Parameter, EditorRequired]
+    public List<FeatModel> BonusFeats { get; set; } = new List<FeatModel>();
+
+    [Parameter]
+    public bool Epic { get; set; }
+}

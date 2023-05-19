@@ -57,10 +57,10 @@ public class FileLoader : IFileLoader
                 return null;
             }
             var tlkTask = LoadTlkAsync(cancellationToken);
-            var response = await httpClient.GetAsync($"/source/{fileName}.2da", cancellationToken);
+            var response = await httpClient.GetAsync($"source/{fileName}.2da", cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                response = await httpClient.GetAsync($"/default-source/{fileName}.2da", cancellationToken);
+                response = await httpClient.GetAsync($"default-source/{fileName}.2da", cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
@@ -106,11 +106,11 @@ public class FileLoader : IFileLoader
     {
         return await cachePolicy.ExecuteAsync(async context =>
         {
-            var dialogResponse = await httpClient.GetAsync($"/default-source/dialog.tlk", cancellationToken);
+            var dialogResponse = await httpClient.GetAsync($"default-source/dialog.tlk", cancellationToken);
             var dialogResponseBody = await dialogResponse.Content.ReadAsByteArrayAsync(cancellationToken);
             var tlkEntries = new TlkDictionary();
             tlkEntries.AddTlkFile(dialogResponseBody);
-            var customResponse = await httpClient.GetAsync($"/source/{config.TlkFileName}", cancellationToken);
+            var customResponse = await httpClient.GetAsync($"source/{config.TlkFileName}", cancellationToken);
             if (customResponse.IsSuccessStatusCode)
             {
                 var customResponseBody = await customResponse.Content.ReadAsByteArrayAsync(cancellationToken);

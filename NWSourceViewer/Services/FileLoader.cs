@@ -57,10 +57,10 @@ public class FileLoader : IFileLoader
                 return null;
             }
             var tlkTask = LoadTlkAsync(cancellationToken);
-            var response = await httpClient.GetAsync($"source/{fileName}.2da", cancellationToken);
+            var response = await httpClient.GetAsync($"source/{fileName.ToLowerInvariant()}.2da", cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                response = await httpClient.GetAsync($"default-source/{fileName}.2da", cancellationToken);
+                response = await httpClient.GetAsync($"default-source/{fileName.ToLowerInvariant()}.2da", cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;

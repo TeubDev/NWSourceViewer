@@ -12,7 +12,7 @@ To compile this program, you need the .NET 7 or later SDK installed. Then in the
 dotnet publish -c Release
 ```
 
-This will create files in the `/bin/Release/net7.0/publish` folder. All of these are needed for running the application.
+This will create files in the `/bin/Release/net7.0/publish/wwwroot` folder. All of these are needed for running the application.
 
 ## Running
 
@@ -23,3 +23,7 @@ If you are only running it locally, run this command where you would have run th
 ```
 dotnet run
 ```
+
+### Hosting outside the root level.
+
+Chances are you will want to run this in a folder other than the root level for your server, such as `my-domain.com/viewer` instead of `my-domain.com`. If that's the case, find the index.html file in the `wwwroot` folder and modify `<base href="/" />` to `<base href="/viewer/" />`, or whatever path you are hosting on. Note that there must be slashes at both the beginning and end of the href attribute.

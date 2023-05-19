@@ -1,48 +1,52 @@
 ﻿@page "/skills/{Id:int}"
 @inherits DataRowComponent<SkillModel>
 
-<PageTitle>The @Tlk[Data.Name] Skill</PageTitle>
+@if (Data != null)
+{
+    <PageTitle>The @Data.NameString Skill</PageTitle>
 
-<h1>The @Tlk[Data.Name] Skill</h1>
+    <h1>The @Data.NameString Skill</h1>
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            Name:
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                Name:
+            </div>
+            <div class="col">
+                @Data.NameString
+            </div>
         </div>
-        <div class="col">
-            @Tlk[Data.Name]
+        <div class="row">
+            <div class="col">
+                Can use untrained:
+            </div>
+            <div class="col">
+                @GetYesNo(Data.Untrained)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Key ability:
+            </div>
+            <div class="col">
+                @Data.KeyAbility
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Armor check penalty:
+            </div>
+            <div class="col">
+                @GetYesNo(Data.ArmorCheckPenalty)
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            Can use untrained: 
-        </div>
-        <div class="col">
-            @GetYesNo(Data.Untrained)
-        </div>
+    <div>
+        Description:
     </div>
-    <div class="row">
-        <div class="col">
-            Key ability:
-        </div>
-        <div class="col">
-            @Data.KeyAbility
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            Armor check penalty:
-        </div>
-        <div class="col">
-            @GetYesNo(Data.ArmorCheckPenalty)
-        </div>
-    </div>
-</div>
-<div>
-    Description:
-</div>
-<textarea class="font-monospace" style="white-space: pre-wrap; width: 100%" readonly>@Tlk[Data.Description]</textarea>
+    <textarea class="font-monospace" style="white-space: pre-wrap; width: 100%" readonly>@Data.DescriptionString</textarea>
+}
+
 
 @code {
 // TODO: Create a CSS class for the textarea.

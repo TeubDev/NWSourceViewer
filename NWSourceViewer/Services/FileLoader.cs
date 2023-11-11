@@ -69,7 +69,7 @@ public class FileLoader : IFileLoader
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
             var tlk = await tlkTask;
 
-            string[]? rows = responseBody.Split("\r\n");
+            string[]? rows = responseBody.Replace("\r", "").Split("\n");
             var headers = rows[2].Split2daRow();
             headers.Insert(0, "Index");
             var data = new List<T>();

@@ -1,5 +1,4 @@
 ﻿using NWSourceViewer.Models;
-using Radzen;
 
 namespace NWSourceViewer.Components;
 
@@ -17,7 +16,7 @@ public abstract class DataTableComponent<T> : DataComponent where T : Base2daRow
         var tableResult = await tableTask;
         if (tableResult != null)
         {
-            Data = tableResult.AsODataEnumerable();
+            Data = tableResult;
         }
     }
 }

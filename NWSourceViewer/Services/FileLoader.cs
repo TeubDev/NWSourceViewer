@@ -79,7 +79,7 @@ public class FileLoader : IFileLoader
                 {
                     var row = rows[rowIndex].Split2daRow();
                     Dictionary<string, string> dataRow = new();
-                    for (int colIndex = 0; colIndex < row.Count; colIndex++)
+                    for (int colIndex = 0; colIndex < headers.Count; colIndex++)
                     {
                         dataRow[headers[colIndex]] = row[colIndex];
                     }

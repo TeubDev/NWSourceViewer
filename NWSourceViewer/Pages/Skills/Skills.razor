@@ -22,6 +22,6 @@
     protected override async Task OnInitializedAsync()
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        await LoadDataAsync("skills", cts.Token);
+        await LoadDataAsync(Constants.SkillsFileName, cts.Token);
     }
 }

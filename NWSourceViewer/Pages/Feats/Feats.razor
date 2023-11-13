@@ -22,6 +22,6 @@
     protected override async Task OnInitializedAsync()
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        await LoadDataAsync("feat", cts.Token);
+        await LoadDataAsync(Constants.FeatsFileName, cts.Token);
     }
 }
